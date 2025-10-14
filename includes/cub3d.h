@@ -19,18 +19,23 @@
 # include <X11/X.h>
 # include <stdlib.h>
 
+#define RED_PIXEL 0xFF0000
+
 typedef struct s_data
 {
 	void	*mlx_ptr;
 	void	*win_ptr;
+	t_player	*player;
 	char	map[6][6];
 }	t_data;
 
+typedef struct s_player
+{
+	int	x;
+	int	y;
+}	t_player;
+
 int	ft_close(t_data *data);
 int	on_keypress(int keysym, t_data *data);
-void draw_minimap(t_data *data, void *mlx, void *win);
-int draw_square(void *mlx, void *win, int x, int y, int size, int color);
-
-
 
 #endif

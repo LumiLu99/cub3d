@@ -41,7 +41,7 @@ $(LIBFT): FORCE
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(CFLAGS) $(INC) -I/usr/include -Imlx -O3 -c $< -o $@
+	@$(CC) $(CFLAGS) $(INC) -Imlx -O3 -c $< -o $@
 	@echo "$(YELLOW)Compiled ✅ $(GREEN) $(BOLD) $< $(RESET)"
 
 $(NAME): $(OBJ) $(LIBFT) $(MLX_LIB)

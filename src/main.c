@@ -12,7 +12,7 @@
 
 #include "../includes/cub3d.h"
 
-void	map_init(t_data *data)
+static void	init_shit(t_data *data)
 {
 	ft_bzero(data, sizeof(t_data));
 	char *map_init[6] = 
@@ -26,6 +26,9 @@ void	map_init(t_data *data)
 	};
 	for (int i = 0; i < 6; i++)
 		strcpy(data->map[i], map_init[i]);
+	data->player->x = 200;
+	data->player->y = 200;
+	mlx_pixel_put(data->mlx_ptr, data->win_ptr, data->player->x, data->player->y, RED_PIXEL);
 }
 
 int	on_keypress(int keysym, t_data *data)
@@ -50,13 +53,13 @@ int main(int argc, char **argv)
 	(void)argv;
 	if (argc == 2)
 	{
-		map_init(&data);
 		data.mlx_ptr = mlx_init();
 		if (!data.mlx_ptr)
-			return (1);
+		return (1);
 		data.win_ptr = mlx_new_window(data.mlx_ptr, 800, 600, "Cub3D");
 		if (!data.win_ptr)
-			return (1);
+		return (1);
+		init_shit(&data);
 		mlx_hook(data.win_ptr, KeyPress, KeyPressMask, on_keypress, &data);
 		mlx_hook(data.win_ptr, DestroyNotify, SubstructureNotifyMask,
 			ft_close, &data);
