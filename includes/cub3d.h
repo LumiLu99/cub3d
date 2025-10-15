@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/04 17:55:27 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/15 19:31:15 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,20 @@
 
 #define RED_PIXEL 0xFF0000
 
-typedef struct s_data
-{
-	void	*mlx_ptr;
-	void	*win_ptr;
-	t_player	*player;
-	char	map[6][6];
-}	t_data;
-
 typedef struct s_player
 {
 	int	x;
 	int	y;
 }	t_player;
+
+typedef struct s_data
+{
+	void	*mlx;
+	void	*win;
+	t_player	player;
+	char	map[6][6];
+}	t_data;
+
 
 int	ft_close(t_data *data);
 int	on_keypress(int keysym, t_data *data);

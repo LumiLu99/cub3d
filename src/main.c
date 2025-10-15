@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/04 18:07:19 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/15 19:32:20 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,35 @@
 static void	init_shit(t_data *data)
 {
 	ft_bzero(data, sizeof(t_data));
-	char *map_init[6] = 
+	// char *map_init[6] = 
+	// {
+	// 	"11111",
+	// 	"10001",
+	// 	"10001",
+	// 	"10001",
+	// 	"11111",
+	// 	NULL,
+	// };
+	// for (int i = 0; i < 6; i++)
+	// 	strcpy(data->map[i], map_init[i]);
+}
+
+void	trying(t_data *data)
+{
+	int i = 0;
+	int j = 0;
+	data->player.x = 200;
+	data->player.y = 200;
+	while (i < 20)
 	{
-		"11111",
-		"10001",
-		"10001",
-		"10001",
-		"11111",
-		""
-	};
-	for (int i = 0; i < 6; i++)
-		strcpy(data->map[i], map_init[i]);
-	data->player->x = 200;
-	data->player->y = 200;
-	mlx_pixel_put(data->mlx_ptr, data->win_ptr, data->player->x, data->player->y, RED_PIXEL);
+		j = 0;
+		while (j < 20)
+		{
+			mlx_pixel_put(data->mlx, data->win, data->player.x + i, data->player.y + j, RED_PIXEL);
+			j++;
+		}
+		i++;
+	}
 }
 
 int	on_keypress(int keysym, t_data *data)
@@ -40,9 +55,9 @@ int	on_keypress(int keysym, t_data *data)
 
 int	ft_close(t_data *data)
 {
-	mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-	mlx_destroy_display(data->mlx_ptr);
-	free(data->mlx_ptr);
+	mlx_destroy_window(data->mlx, data->win);
+	mlx_destroy_display(data->mlx);
+	free(data->mlx);
 	exit(0);
 }
 
@@ -53,17 +68,18 @@ int main(int argc, char **argv)
 	(void)argv;
 	if (argc == 2)
 	{
-		data.mlx_ptr = mlx_init();
-		if (!data.mlx_ptr)
-		return (1);
-		data.win_ptr = mlx_new_window(data.mlx_ptr, 800, 600, "Cub3D");
-		if (!data.win_ptr)
-		return (1);
 		init_shit(&data);
-		mlx_hook(data.win_ptr, KeyPress, KeyPressMask, on_keypress, &data);
-		mlx_hook(data.win_ptr, DestroyNotify, SubstructureNotifyMask,
+		data.mlx = mlx_init();
+		if (!data.mlx)
+			return (1);
+		data.win = mlx_new_window(data.mlx, 1024, 764, "Cub3D");
+		if (!data.win)
+			return (1);
+		trying(&data);
+		mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
+		mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 			ft_close, &data);
-		mlx_loop(data.mlx_ptr);
+		mlx_loop(data.mlx);
 	}
 	else
 	{
