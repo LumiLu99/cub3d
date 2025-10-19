@@ -12,20 +12,32 @@
 
 #include "../includes/cub3d.h"
 
-static void	init_shit(t_data *data)
+static void	init_data(t_data *data)
 {
 	ft_bzero(data, sizeof(t_data));
-	// char *map_init[6] = 
-	// {
-	// 	"11111",
-	// 	"10001",
-	// 	"10001",
-	// 	"10001",
-	// 	"11111",
-	// 	NULL,
-	// };
-	// for (int i = 0; i < 6; i++)
-	// 	strcpy(data->map[i], map_init[i]);
+	data->mlx = mlx_init();
+	if (!data->mlx)
+		print_error_exit("mlx init failed!\n");
+	data->win = mlx_new_window(data->mlx, 1024, 764, "Cub3D");
+	if (!data->win)
+		print_error_exit("win init failed!\n");
+	data->img.img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
+	if (!data->img.img)
+		print_error_exit("img init failed!\n");
+	data->img.addr = mlx_get_data_addr(data->img.img, &data->img.bits_per_pixel, 
+			&data->img.line_len, &data->img.endian);
+	if (!data->img.addr)
+		print_error_exit("img addr init failed!\n");
+}
+
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+        return ;
+	dst = data->img.addr + (y * data->img.line_len + x * (data->img.bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
 }
 
 void	trying(t_data *data)
@@ -39,7 +51,7 @@ void	trying(t_data *data)
 		j = 0;
 		while (j < 20)
 		{
-			mlx_pixel_put(data->mlx, data->win, data->player.x + i, data->player.y + j, RED_PIXEL);
+			my_mlx_pixel_put(data, data->player.x + i, data->player.y + j, RED_PIXEL);
 			j++;
 		}
 		i++;
@@ -68,22 +80,14 @@ int main(int argc, char **argv)
 	(void)argv;
 	if (argc == 2)
 	{
-		init_shit(&data);
-		data.mlx = mlx_init();
-		if (!data.mlx)
-			return (1);
-		data.win = mlx_new_window(data.mlx, 1024, 764, "Cub3D");
-		if (!data.win)
-			return (1);
+		init_data(&data);
 		trying(&data);
+		mlx_put_image_to_window(data.mlx, data.win, data.img.img, 0, 0);
 		mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 		mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 			ft_close, &data);
 		mlx_loop(data.mlx);
 	}
 	else
-	{
-		ft_putstr_fd("Error\nUsage: ./cub3D <map file.ber>", 2);
-		exit(1);
-	}
+		print_error_exit("Usage: ./cub3D <map file.ber>\n");
 }

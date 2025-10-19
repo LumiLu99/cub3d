@@ -19,7 +19,15 @@
 # include <X11/X.h>
 # include <stdlib.h>
 
+// Colours
 #define RED_PIXEL 0xFF0000
+
+// Window
+# define WIDTH 1024
+# define HEIGHT 768
+
+// Textures
+# define TEX_SIZE 50
 
 typedef struct s_player
 {
@@ -27,16 +35,29 @@ typedef struct s_player
 	int	y;
 }	t_player;
 
+typedef struct s_img
+{
+	void	*img;
+	char	*addr;
+	int		endian;
+	int		bits_per_pixel;
+	int		line_len;
+}	t_img;
+
 typedef struct s_data
 {
 	void	*mlx;
 	void	*win;
 	t_player	player;
+	t_img		img;
 	char	map[6][6];
 }	t_data;
 
 
 int	ft_close(t_data *data);
 int	on_keypress(int keysym, t_data *data);
+
+//utils
+void	print_error_exit(char *str);
 
 #endif
