@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/15 19:31:15 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/19 18:16:53 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,41 @@
 # include <X11/keysym.h>
 # include <X11/X.h>
 # include <stdlib.h>
+# include <math.h>
 
 // Colours
-#define RED_PIXEL 0xFF0000
+# define RED_PIXEL 0xFF0000
+# define GREEN_PIXEL 0x00FF00
+# define WHITE_PIXEL 0xFFFFFF
+# define BLUE_PIXEL 0x0000FF
+# define GRAY_PIXEL 0x808080
 
 // Window
-# define WIDTH 1024
-# define HEIGHT 768
+# define WIDTH 1920
+# define HEIGHT 1080
 
 // Textures
 # define TEX_SIZE 50
+
+// Tile size
+# define TILE_SIZE 20
+
+// Maths
+# define PI 3.1415926535
+
+typedef struct s_map
+{
+	char	*map_arr[8];
+	int		x_len_map;
+	int		y_len_map;
+
+}	t_map;
+
+typedef struct s_minimap
+{
+	int	mp_x;
+	int	mp_y;
+}	t_minimap;
 
 typedef struct s_player
 {
@@ -50,7 +75,8 @@ typedef struct s_data
 	void	*win;
 	t_player	player;
 	t_img		img;
-	char	map[6][6];
+	t_map		map;
+	t_minimap	mini;
 }	t_data;
 
 
