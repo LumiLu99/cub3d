@@ -25,7 +25,7 @@ CFLAGS = -Wall -Wextra -Werror -g3
 RM = rm -rf
 
 # Source files
-SRC = $(addprefix $(SRC_DIR)/, main.c utils.c)
+SRC = $(addprefix $(SRC_DIR)/, main.c utils.c key.c player.c)
 
 # Object files
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

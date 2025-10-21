@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/19 18:16:53 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/21 12:22:06 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <X11/keysym.h>
 # include <X11/X.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include <math.h>
 
 // Colours
@@ -38,7 +39,7 @@
 # define TILE_SIZE 20
 
 // Maths
-# define PI 3.1415926535
+# define PI 3.14159265359
 
 typedef struct s_map
 {
@@ -58,6 +59,10 @@ typedef struct s_player
 {
 	int	x;
 	int	y;
+	bool	key_up;
+	bool	key_down;
+	bool	key_right;
+	bool	key_left;
 }	t_player;
 
 typedef struct s_img
@@ -81,9 +86,17 @@ typedef struct s_data
 
 
 int	ft_close(t_data *data);
-int	on_keypress(int keysym, t_data *data);
+int	update(void *param);
 
-//utils
+// key
+int	on_keypress(int keysym, t_data *data);
+int	on_keyrelease(int keysym, t_data *data);
+
+// init
+void	init_mlx(t_data *data);
+void	init_player(t_player *player);
+
+// utils
 void	print_error_exit(char *str);
 
 #endif

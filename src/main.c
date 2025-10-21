@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/19 19:41:56 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/21 12:21:01 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ static void	init_data(t_data *data)
 	data->map.map_arr[5] = "11000011";
 	data->map.map_arr[6] = "10000001";
 	data->map.map_arr[7] = "11111111";
+	init_mlx(data);
+	init_player(&data->player);
+}
+
+void	init_mlx(t_data *data)
+{
 	data->mlx = mlx_init();
 	if (!data->mlx)
 		print_error_exit("mlx init failed!\n");
@@ -36,10 +42,8 @@ static void	init_data(t_data *data)
 			&data->img.line_len, &data->img.endian);
 	if (!data->img.addr)
 		print_error_exit("img addr init failed!\n");
-	data->player.x = 20;
-	data->player.y = 20;
-
 }
+
 
 static void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -116,19 +120,11 @@ static void	print_minimap(t_data *data)
 	}
 }
 
-
-int	on_keypress(int keysym, t_data *data)
+int	update(void *param)
 {
-	if (keysym == XK_Escape)
-		ft_close(data);
-	else if (keysym == XK_w)
-		data->player.y -= 5;
-	else if (keysym == XK_a)
-		data->player.x -= 5;
-	else if (keysym == XK_s)
-		data->player.y += 5;
-	else if (keysym == XK_d)
-		data->player.x += 5;
+	t_data	*data;
+	
+	data = (t_data *)param;
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
 	print_minimap(data);
 	print_player_pixel(data);
@@ -136,13 +132,6 @@ int	on_keypress(int keysym, t_data *data)
 	return (0);
 }
 
-int	ft_close(t_data *data)
-{
-	mlx_destroy_window(data->mlx, data->win);
-	mlx_destroy_display(data->mlx);
-	free(data->mlx);
-	exit(0);
-}
 
 int main(int argc, char **argv)
 {
@@ -156,6 +145,8 @@ int main(int argc, char **argv)
 		print_player_pixel(&data);
 		mlx_put_image_to_window(data.mlx, data.win, data.img.img, 0, 0);
 		mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
+		mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
+		mlx_loop_hook(data.mlx, update, &data);
 		mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 			ft_close, &data);
 		mlx_loop(data.mlx);
