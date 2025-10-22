@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/21 12:21:01 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/21 19:25:39 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ static void	init_data(t_data *data)
 	ft_bzero(data, sizeof(t_data));
 	data->map.map_arr[0] = "11111111";
 	data->map.map_arr[1] = "10000001";
-	data->map.map_arr[2] = "11000011";
-	data->map.map_arr[3] = "10000001";
-	data->map.map_arr[4] = "11100111";
-	data->map.map_arr[5] = "11000011";
+	data->map.map_arr[2] = "10000011";
+	data->map.map_arr[3] = "10010001";
+	data->map.map_arr[4] = "10000001";
+	data->map.map_arr[5] = "11000001";
 	data->map.map_arr[6] = "10000001";
 	data->map.map_arr[7] = "11111111";
 	init_mlx(data);
@@ -120,14 +120,85 @@ static void	print_minimap(t_data *data)
 	}
 }
 
+bool	touch(float px, float py, t_data *data)
+{
+	int	x;
+	int	y;
+
+	x = px / TILE_SIZE;
+	y = py / TILE_SIZE;
+	if (data->map.map_arr[y][x] == '1')
+		return (true);
+	return (false);
+}
+
+int	distance(float x, float y)
+{
+	return (sqrt(x * x + y * y));
+}
+
+void	draw_line(t_data *data, float start_x, int i)
+{
+	float	cos_angle;
+	float	sin_angle;
+	float	ray_x;
+	float	ray_y;
+	float	dist;
+	float	height;
+	int		start_y;
+	int		end;
+
+	cos_angle = cos(start_x);
+	sin_angle = sin(start_x);
+	ray_x = data->player.x;
+	ray_y = data->player.y;
+	while (!touch(ray_x, ray_y, data))
+	{
+		my_mlx_pixel_put(data, ray_x, ray_y, GREEN_PIXEL);
+		ray_x += cos_angle;
+		ray_y += sin_angle;
+	}
+	dist = distance(ray_x - data->player.x, ray_y - data->player.y);
+	height = (TILE_SIZE / dist) * (WIDTH / 2);
+	start_y = (HEIGHT - height) / 2;
+	end = start_y + height;
+	while (start_y < end)
+	{
+		my_mlx_pixel_put(data, i, start_y, 0x0000FF);
+		start_y++;
+	}
+	
+}
+
 int	update(void *param)
 {
 	t_data	*data;
+	// float	ray_x;
+	// float	ray_y;
+	// float	cos_angle;
+	// float	sin_angle;
+	float	fraction;
+	float	start_x;
+	int		i;
 	
 	data = (t_data *)param;
+	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
 	print_minimap(data);
 	print_player_pixel(data);
+	// ray_x = data->player.x;
+	// ray_y = data->player.y;
+	// cos_angle = cos(data->player.angle);
+	// sin_angle = sin(data->player.angle);
+	fraction = PI / 3 / WIDTH;
+	start_x = data->player.angle - PI / 6;
+	i = 0;
+	while (i < WIDTH)
+	{
+		draw_line(data, start_x, i);
+		start_x += fraction;
+		i++;
+	}
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }
@@ -141,9 +212,6 @@ int main(int argc, char **argv)
 	if (argc == 2)
 	{
 		init_data(&data);
-		print_minimap(&data);
-		print_player_pixel(&data);
-		mlx_put_image_to_window(data.mlx, data.win, data.img.img, 0, 0);
 		mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 		mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
 		mlx_loop_hook(data.mlx, update, &data);

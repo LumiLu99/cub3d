@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/21 12:22:06 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/21 18:48:11 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define TEX_SIZE 50
 
 // Tile size
-# define TILE_SIZE 20
+# define TILE_SIZE 50
 
 // Maths
 # define PI 3.14159265359
@@ -57,12 +57,17 @@ typedef struct s_minimap
 
 typedef struct s_player
 {
-	int	x;
-	int	y;
+	float	x;
+	float	y;
+	float	angle;
+
 	bool	key_up;
 	bool	key_down;
 	bool	key_right;
 	bool	key_left;
+
+	bool	left_rotate;
+	bool	right_rotate;
 }	t_player;
 
 typedef struct s_img
@@ -87,6 +92,8 @@ typedef struct s_data
 
 int	ft_close(t_data *data);
 int	update(void *param);
+
+void	move_player(t_data *data);
 
 // key
 int	on_keypress(int keysym, t_data *data);
