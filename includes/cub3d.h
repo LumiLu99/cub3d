@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/21 18:48:11 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/27 14:50:25 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@
 # define GRAY_PIXEL 0x808080
 
 // Window
-# define WIDTH 1920
-# define HEIGHT 1080
+# define WIDTH 1280
+# define HEIGHT 720
 
 // Textures
 # define TEX_SIZE 50
 
 // Tile size
-# define TILE_SIZE 50
+# define TILE_SIZE 64
 
 // Maths
 # define PI 3.14159265359

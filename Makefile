@@ -21,7 +21,7 @@ MLX_LIB = $(MLX_DIR)/libmlx_Linux.a
 
 # Compiler & flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g3
+CFLAGS = -Wall -Werror -Wextra -g3
 RM = rm -rf
 
 # Source files
