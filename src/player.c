@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 11:54:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/30 13:49:57 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/30 17:02:37 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ void	move_player(t_data *data)
 	float	rotation_speed;
 	// float	cos_angle;
 	// float	sin_angle;
+	float	next_x;
+	float	next_y;
 
 	move_speed = 2;
 	rotation_speed = 0.03;
@@ -53,18 +55,49 @@ void	move_player(t_data *data)
 	}
 	if (data->player.key_up)
     {
-        data->player.x += cos(data->player.angle) * move_speed; //delta-x, change of X in one step
-        data->player.y += sin(data->player.angle) * move_speed; //delta-y, change of y in one step
+		next_x = data->player.x + cos(data->player.angle) * move_speed;
+		next_y = data->player.y + sin(data->player.angle) * move_speed;
+
+		if (data->map.map_arr[(int)(data->player.y / TILE_SIZE)][(int)(next_x / TILE_SIZE)] != '1')
+			data->player.x = next_x;
+		if (data->map.map_arr[(int)(next_y / TILE_SIZE)][(int)(data->player.x / TILE_SIZE)] != '1')
+			data->player.y = next_y;
+        // data->player.x += cos(data->player.angle) * move_speed; //delta-x, change of X in one step
+        // data->player.y += sin(data->player.angle) * move_speed; //delta-y, change of y in one step
     }
     if (data->player.key_down)
     {
-        data->player.x -= cos(data->player.angle) * move_speed;
-        data->player.y -= sin(data->player.angle) * move_speed;
+		next_x = data->player.x - cos(data->player.angle) * move_speed;
+		next_y = data->player.y - sin(data->player.angle) * move_speed;
+	
+		if (data->map.map_arr[(int)(data->player.y / TILE_SIZE)][(int)(next_x / TILE_SIZE)] != '1')
+			data->player.x = next_x;
+		if (data->map.map_arr[(int)(next_y / TILE_SIZE)][(int)(data->player.x / TILE_SIZE)] != '1')
+			data->player.y = next_y;
+        // data->player.x -= cos(data->player.angle) * move_speed;
+        // data->player.y -= sin(data->player.angle) * move_speed;
     }
 	if (data->player.key_left)
 	{
-		data->player.x += sin(data->player.angle) * move_speed;
-		data->player.y -= cos(data->player.angle) * move_speed;
+		next_x = data->player.x + sin(data->player.angle) * move_speed;
+		next_y = data->player.y - cos(data->player.angle) * move_speed;
+		if (data->map.map_arr[(int)(data->player.y / TILE_SIZE)][(int)(next_x / TILE_SIZE)] != '1')
+			data->player.x = next_x;
+		if (data->map.map_arr[(int)(next_y / TILE_SIZE)][(int)(data->player.x / TILE_SIZE)] != '1')
+			data->player.y = next_y;
+		// data->player.x += sin(data->player.angle) * move_speed;
+		// data->player.y -= cos(data->player.angle) * move_speed;
+	}
+	if (data->player.key_right)
+	{
+		next_x = data->player.x - sin(data->player.angle) * move_speed;
+		next_y = data->player.y + cos(data->player.angle) * move_speed;
+		if (data->map.map_arr[(int)(data->player.y / TILE_SIZE)][(int)(next_x / TILE_SIZE)] != '1')
+			data->player.x = next_x;
+		if (data->map.map_arr[(int)(next_y / TILE_SIZE)][(int)(data->player.x / TILE_SIZE)] != '1')
+			data->player.y = next_y;
+		// data->player.x -= sin(data->player.angle) * move_speed;
+		// data->player.y += cos(data->player.angle) * move_speed;
 	}
     // Note: A/D keys should be for "strafing" (moving left/right sideways)
     // You can add this later using angles perpendicular to the player's view.

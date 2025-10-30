@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/30 13:49:41 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/30 18:07:56 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	init_data(t_data *data)
 	data->map.map_arr[2] = "10000011";
 	data->map.map_arr[3] = "10010001";
 	data->map.map_arr[4] = "10000001";
-	data->map.map_arr[5] = "11000001";
+	data->map.map_arr[5] = "1100N001";
 	data->map.map_arr[6] = "10000001";
 	data->map.map_arr[7] = "11111111";
 	init_mlx(data);
@@ -191,9 +191,14 @@ static void draw_ray(t_data *data)
     double ray_y;
 	int map_x;
 	int map_y;
+	double distance;
+	int y;
+	double fov_radians;
+	double angle_step;
 
     i = 0;
-    while (i < WIDTH) // Draw a ray that is 30 pixels long for now
+	fov_radians = FOV_DEGREE * (M_PI / 180);
+    while (i < WIDTH)
     {
         // Calculate the point on the ray at distance 'i'
         ray_x = data->player.x + i * cos(data->player.angle);
@@ -204,8 +209,24 @@ static void draw_ray(t_data *data)
 		if (data->map.map_arr[map_y][map_x] == '1')
 			break ;
 		i++;
-        // Draw the pixel for this point on the ray
     }
+		//distance to wall
+		distance = sqrt(pow(ray_x - data->player.x, 2) + pow(ray_y - data->player.y, 2));
+
+		// Convert to wall height
+		int wall_height = (int)((TILE_SIZE * 500) / distance);
+
+		// Draw vertical wall slice in the middle
+		int line_x = WIDTH / 2;
+		int line_start = (HEIGHT / 2) - (wall_height / 2);
+		int line_end = (HEIGHT / 2) + (wall_height / 2);
+
+		y = line_start;
+		while (y < line_end)
+		{
+			my_mlx_pixel_put(data, line_x, y, WHITE_PIXEL);
+			y++;
+		}
 }
 
 int	update(void *param)
@@ -236,7 +257,6 @@ int	update(void *param)
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }
-
 
 int main(int argc, char **argv)
 {
