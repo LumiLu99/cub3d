@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/21 19:25:39 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/28 14:33:23 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ static void	print_player_pixel(t_data *data)
 {
 	int i = 0;
 	int j = 0;
-	while (i < 10)
+	while (i < 5)
 	{
 		j = 0;
-		while (j < 10)
+		while (j < 5)
 		{
 			my_mlx_pixel_put(data, data->player.x + i, data->player.y + j, RED_PIXEL);
 			j++;
@@ -184,12 +184,12 @@ int	update(void *param)
 	data = (t_data *)param;
 	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
-	print_minimap(data);
-	print_player_pixel(data);
 	// ray_x = data->player.x;
 	// ray_y = data->player.y;
 	// cos_angle = cos(data->player.angle);
 	// sin_angle = sin(data->player.angle);
+	print_minimap(data);
+	print_player_pixel(data);
 	fraction = PI / 3 / WIDTH;
 	start_x = data->player.angle - PI / 6;
 	i = 0;
