@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/28 14:33:23 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/30 13:49:41 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,20 @@ int	distance(float x, float y)
 	return (sqrt(x * x + y * y));
 }
 
+float	fixed_dist(float x1, float y1, float x2, float y2, t_data *data)
+{
+	float	delta_x;
+	float	delta_y;
+	float	angle;
+	float	fix_dist;
+	
+	delta_x = x2 - x1;
+	delta_y = y2 - y1;
+	angle = atan2(delta_y, delta_x) - data->player.angle;
+	fix_dist = distance(delta_x, delta_y) * cos(angle);
+	return (fix_dist);
+}
+
 void	draw_line(t_data *data, float start_x, int i)
 {
 	float	cos_angle;
@@ -158,7 +172,7 @@ void	draw_line(t_data *data, float start_x, int i)
 		ray_x += cos_angle;
 		ray_y += sin_angle;
 	}
-	dist = distance(ray_x - data->player.x, ray_y - data->player.y);
+	dist = fixed_dist(data->player.x, data->player.y, ray_x, ray_y, data);
 	height = (TILE_SIZE / dist) * (WIDTH / 2);
 	start_y = (HEIGHT - height) / 2;
 	end = start_y + height;
@@ -170,35 +184,55 @@ void	draw_line(t_data *data, float start_x, int i)
 	
 }
 
+static void draw_ray(t_data *data)
+{
+    int i;
+    double ray_x;
+    double ray_y;
+	int map_x;
+	int map_y;
+
+    i = 0;
+    while (i < WIDTH) // Draw a ray that is 30 pixels long for now
+    {
+        // Calculate the point on the ray at distance 'i'
+        ray_x = data->player.x + i * cos(data->player.angle);
+        ray_y = data->player.y + i * sin(data->player.angle);
+		map_x = (int)ray_x / TILE_SIZE;
+		map_y = (int)ray_y / TILE_SIZE;
+		my_mlx_pixel_put(data, ray_x, ray_y, GREEN_PIXEL); // Use a bright color like yellow
+		if (data->map.map_arr[map_y][map_x] == '1')
+			break ;
+		i++;
+        // Draw the pixel for this point on the ray
+    }
+}
+
 int	update(void *param)
 {
 	t_data	*data;
-	// float	ray_x;
-	// float	ray_y;
-	// float	cos_angle;
-	// float	sin_angle;
-	float	fraction;
-	float	start_x;
-	int		i;
+	// float	fraction;
+	// float	start_x;
+	// int		i;
 	
 	data = (t_data *)param;
 	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
-	// ray_x = data->player.x;
-	// ray_y = data->player.y;
-	// cos_angle = cos(data->player.angle);
-	// sin_angle = sin(data->player.angle);
 	print_minimap(data);
 	print_player_pixel(data);
-	fraction = PI / 3 / WIDTH;
-	start_x = data->player.angle - PI / 6;
-	i = 0;
-	while (i < WIDTH)
-	{
-		draw_line(data, start_x, i);
-		start_x += fraction;
-		i++;
-	}
+	// fraction = PI / 3 / WIDTH;
+	// // fraction = PI / 3 / WIDTH;: You define a Field of View of 60 degrees (PI / 3 radians). 
+	// // This line calculates the tiny angle difference between each of the rays you will cast.
+	// start_x = data->player.angle - PI / 6;
+	// // calculate the angle for the very first ray, which is on the far-left side of your FOV (player's angle minus 30 degrees).
+	// i = 0;
+	// while (i < WIDTH)
+	// {
+	// 	draw_line(data, start_x, i);
+	// 	start_x += fraction;
+	// 	i++;
+	// }
+	draw_ray(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }
@@ -222,3 +256,25 @@ int main(int argc, char **argv)
 	else
 		print_error_exit("Usage: ./cub3D <map file.ber>\n");
 }
+
+/**
+ * The Core Idea: Simulating 3D with 2D
+Imagine you are standing in the middle of the map. 
+You can't see the whole map at once, only what's in your Field of View (FOV).
+
+The program simulates this by sending out a series of "rays" 
+from your player's position across your FOV. For every single vertical column of 
+pixels on your screen, one ray is cast.
+
+Each ray travels in a straight line until it hits a wall. 
+
+The program then does two things:
+
+1) Measures the distance the ray traveled.
+
+2) Based on that distance, it draws a vertical line in the corresponding column on the screen.
+
+If the wall is close, the distance is short, so the vertical line is drawn very tall. 
+If the wall is far away, the distance is long, and the line is drawn short. 
+This creates the illusion of depth and perspective.
+ */
