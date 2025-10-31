@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/30 18:07:56 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/31 18:38:10 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,140 +120,35 @@ static void	print_minimap(t_data *data)
 	}
 }
 
-bool	touch(float px, float py, t_data *data)
+void	draw_dda(t_data *data)
 {
 	int	x;
-	int	y;
+	int	map_x;
+	int	map_y;
 
-	x = px / TILE_SIZE;
-	y = py / TILE_SIZE;
-	if (data->map.map_arr[y][x] == '1')
-		return (true);
-	return (false);
-}
-
-int	distance(float x, float y)
-{
-	return (sqrt(x * x + y * y));
-}
-
-float	fixed_dist(float x1, float y1, float x2, float y2, t_data *data)
-{
-	float	delta_x;
-	float	delta_y;
-	float	angle;
-	float	fix_dist;
-	
-	delta_x = x2 - x1;
-	delta_y = y2 - y1;
-	angle = atan2(delta_y, delta_x) - data->player.angle;
-	fix_dist = distance(delta_x, delta_y) * cos(angle);
-	return (fix_dist);
-}
-
-void	draw_line(t_data *data, float start_x, int i)
-{
-	float	cos_angle;
-	float	sin_angle;
-	float	ray_x;
-	float	ray_y;
-	float	dist;
-	float	height;
-	int		start_y;
-	int		end;
-
-	cos_angle = cos(start_x);
-	sin_angle = sin(start_x);
-	ray_x = data->player.x;
-	ray_y = data->player.y;
-	while (!touch(ray_x, ray_y, data))
+	x = 0;
+	while (x < WIDTH)
 	{
-		my_mlx_pixel_put(data, ray_x, ray_y, GREEN_PIXEL);
-		ray_x += cos_angle;
-		ray_y += sin_angle;
+		data->ray.camera_x = 2 * x / (double)(WIDTH) - 1;
+		data->ray.ray_dir_x = data->player.dir_x + data->player.dir_x * data->ray.camera_x;
+		data->ray.ray_dir_y = data->player.dir_y + data->player.dir_y * data->ray.camera_x;
+		map_x = (int)(data->player.pos_x);
+		map_y = (int)(data->player.pos_y);
+		data->ray.delta_x = abs(1 / data->ray.ray_dir_x);
+		data->ray.delta_y = abs(1 / data->ray.ray_dir_y);
+		x++;
 	}
-	dist = fixed_dist(data->player.x, data->player.y, ray_x, ray_y, data);
-	height = (TILE_SIZE / dist) * (WIDTH / 2);
-	start_y = (HEIGHT - height) / 2;
-	end = start_y + height;
-	while (start_y < end)
-	{
-		my_mlx_pixel_put(data, i, start_y, 0x0000FF);
-		start_y++;
-	}
-	
-}
-
-static void draw_ray(t_data *data)
-{
-    int i;
-    double ray_x;
-    double ray_y;
-	int map_x;
-	int map_y;
-	double distance;
-	int y;
-	double fov_radians;
-	double angle_step;
-
-    i = 0;
-	fov_radians = FOV_DEGREE * (M_PI / 180);
-    while (i < WIDTH)
-    {
-        // Calculate the point on the ray at distance 'i'
-        ray_x = data->player.x + i * cos(data->player.angle);
-        ray_y = data->player.y + i * sin(data->player.angle);
-		map_x = (int)ray_x / TILE_SIZE;
-		map_y = (int)ray_y / TILE_SIZE;
-		my_mlx_pixel_put(data, ray_x, ray_y, GREEN_PIXEL); // Use a bright color like yellow
-		if (data->map.map_arr[map_y][map_x] == '1')
-			break ;
-		i++;
-    }
-		//distance to wall
-		distance = sqrt(pow(ray_x - data->player.x, 2) + pow(ray_y - data->player.y, 2));
-
-		// Convert to wall height
-		int wall_height = (int)((TILE_SIZE * 500) / distance);
-
-		// Draw vertical wall slice in the middle
-		int line_x = WIDTH / 2;
-		int line_start = (HEIGHT / 2) - (wall_height / 2);
-		int line_end = (HEIGHT / 2) + (wall_height / 2);
-
-		y = line_start;
-		while (y < line_end)
-		{
-			my_mlx_pixel_put(data, line_x, y, WHITE_PIXEL);
-			y++;
-		}
 }
 
 int	update(void *param)
 {
 	t_data	*data;
-	// float	fraction;
-	// float	start_x;
-	// int		i;
-	
 	data = (t_data *)param;
 	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
 	print_minimap(data);
 	print_player_pixel(data);
-	// fraction = PI / 3 / WIDTH;
-	// // fraction = PI / 3 / WIDTH;: You define a Field of View of 60 degrees (PI / 3 radians). 
-	// // This line calculates the tiny angle difference between each of the rays you will cast.
-	// start_x = data->player.angle - PI / 6;
-	// // calculate the angle for the very first ray, which is on the far-left side of your FOV (player's angle minus 30 degrees).
-	// i = 0;
-	// while (i < WIDTH)
-	// {
-	// 	draw_line(data, start_x, i);
-	// 	start_x += fraction;
-	// 	i++;
-	// }
-	draw_ray(data);
+	draw_dda(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }

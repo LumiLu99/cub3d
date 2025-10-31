@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/30 19:48:57 by yelu             ###   ########.fr       */
+/*   Updated: 2025/10/31 17:48:04 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,18 +59,35 @@ typedef struct s_minimap
 
 typedef struct s_player
 {
-	float	x;
-	float	y;
-	float	angle;
-
+	double	pos_x;
+	double	pos_y;
+	double	dir_x;
+	double	dir_y;
+	double	plane_x;
+	double	plane_y;
+	double	angle;
 	bool	key_up;
 	bool	key_down;
 	bool	key_right;
 	bool	key_left;
-
 	bool	left_rotate;
 	bool	right_rotate;
 }	t_player;
+
+typedef struct s_time
+{
+	double	time;
+	double	old_time;
+}	t_time;
+
+typedef struct s_ray
+{
+	double	ray_dir_x;
+	double	ray_dir_y;
+	double	camera_x;
+	double	delta_x;
+	double	delta_y;
+}	t_ray;
 
 typedef struct s_img
 {
@@ -89,6 +106,8 @@ typedef struct s_data
 	t_img		img;
 	t_map		map;
 	t_minimap	mini;
+	t_time		time;
+	t_ray		ray;
 }	t_data;
 
 
