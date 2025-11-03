@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/31 18:38:10 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/03 15:07:50 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,22 +120,25 @@ static void	print_minimap(t_data *data)
 	}
 }
 
+static void	ray_init(t_data *data, int x)
+{
+	data->ray.camera_x = 2.0 * x / (double)(WIDTH) - 1.0;
+	data->ray.ray_dir_x = data->player.dir_x + (data->player.plane_x * data->ray.camera_x);
+	data->ray.ray_dir_y = data->player.dir_y + (data->player.plane_y * data->ray.camera_x);
+	data->ray.ray_dir_x = (int)(data->player.pos_x);
+	data->ray.ray_dir_y = (int)(data->player.pos_y);
+	data->ray.delta_x = fabs(1.0 / data->ray.ray_dir_x);
+	data->ray.delta_y = fabs(1.0 / data->ray.ray_dir_y);
+}
+
 void	draw_dda(t_data *data)
 {
 	int	x;
-	int	map_x;
-	int	map_y;
 
 	x = 0;
 	while (x < WIDTH)
 	{
-		data->ray.camera_x = 2 * x / (double)(WIDTH) - 1;
-		data->ray.ray_dir_x = data->player.dir_x + data->player.dir_x * data->ray.camera_x;
-		data->ray.ray_dir_y = data->player.dir_y + data->player.dir_y * data->ray.camera_x;
-		map_x = (int)(data->player.pos_x);
-		map_y = (int)(data->player.pos_y);
-		data->ray.delta_x = abs(1 / data->ray.ray_dir_x);
-		data->ray.delta_y = abs(1 / data->ray.ray_dir_y);
+		ray_init(data, x);
 		x++;
 	}
 }

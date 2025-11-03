@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/31 17:48:04 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/03 15:04:45 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ typedef struct s_ray
 	double	camera_x;
 	double	delta_x;
 	double	delta_y;
+	int		map_x;
+	int		map_y;
 }	t_ray;
 
 typedef struct s_img
