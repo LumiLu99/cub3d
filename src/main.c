@@ -120,29 +120,6 @@ static void	print_minimap(t_data *data)
 	}
 }
 
-static void	ray_init(t_data *data, int x)
-{
-	data->ray.camera_x = 2.0 * x / (double)(WIDTH) - 1.0;
-	data->ray.ray_dir_x = data->player.dir_x + (data->player.plane_x * data->ray.camera_x);
-	data->ray.ray_dir_y = data->player.dir_y + (data->player.plane_y * data->ray.camera_x);
-	data->ray.ray_dir_x = (int)(data->player.pos_x);
-	data->ray.ray_dir_y = (int)(data->player.pos_y);
-	data->ray.delta_x = fabs(1.0 / data->ray.ray_dir_x);
-	data->ray.delta_y = fabs(1.0 / data->ray.ray_dir_y);
-}
-
-void	draw_dda(t_data *data)
-{
-	int	x;
-
-	x = 0;
-	while (x < WIDTH)
-	{
-		ray_init(data, x);
-		x++;
-	}
-}
-
 int	update(void *param)
 {
 	t_data	*data;

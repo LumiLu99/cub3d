@@ -89,6 +89,11 @@ typedef struct s_ray
 	double	delta_y;
 	int		map_x;
 	int		map_y;
+	double	side_n_x;
+	double	side_n_y;
+	double	side_dist_x;
+	double	side_dist_y;
+	double	perp_dist;
 }	t_ray;
 
 typedef struct s_img
@@ -121,6 +126,9 @@ void	move_player(t_data *data);
 // key
 int	on_keypress(int keysym, t_data *data);
 int	on_keyrelease(int keysym, t_data *data);
+
+// raycasting
+void	draw_dda(t_data *data);
 
 // init
 void	init_mlx(t_data *data);
