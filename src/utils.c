@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 21:13:12 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/21 13:37:15 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/07 17:45:24 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,3 +27,19 @@ int	ft_close(t_data *data)
 	free(data->mlx);
 	exit(0);
 }
+
+void	print_fps(t_data *data)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	
+}
+
+long long	get_time_in_ms(void)
+{
+	struct timeval	tv;
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+

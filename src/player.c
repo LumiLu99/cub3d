@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 11:54:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/31 17:03:23 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/07 17:30:03 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	move_player(t_data *data)
 	float	rotation_speed;
 	// float	cos_angle;
 	// float	sin_angle;
-	float	next_x;
-	float	next_y;
+	double	next_x;
+	double	next_y;
 
 	move_speed = 2;
 	rotation_speed = 0.03;
@@ -59,13 +59,13 @@ void	move_player(t_data *data)
 	}
 	if (data->player.key_up)
     {
-		next_x = data->player.x + cos(data->player.angle) * move_speed;
-		next_y = data->player.y + sin(data->player.angle) * move_speed;
+		next_x = data->player.pos_x - data->player.dir_x * move_speed *;
+		next_y = data->player.pos_y - data->player.dir_y * move_speed;
 
-		if (data->map.map_arr[(int)(data->player.y / TILE_SIZE)][(int)(next_x / TILE_SIZE)] != '1')
-			data->player.x = next_x;
-		if (data->map.map_arr[(int)(next_y / TILE_SIZE)][(int)(data->player.x / TILE_SIZE)] != '1')
-			data->player.y = next_y;
+		if (data->map.map_arr[(int)(data->player.pos_y / TILE_SIZE)][(int)(next_x / TILE_SIZE)] != '1')
+			data->player.pos_x = next_x;
+		if (data->map.map_arr[(int)(next_y / TILE_SIZE)][(int)(data->player.pos_x / TILE_SIZE)] != '1')
+			data->player.pos_y = next_y;
         // data->player.x += cos(data->player.angle) * move_speed; //delta-x, change of X in one step
         // data->player.y += sin(data->player.angle) * move_speed; //delta-y, change of y in one step
     }

@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 00:19:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/06 22:48:05 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/07 15:37:24 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,32 @@ static void	dda_calc(t_data *data, int *side)
 	}
 }
 
+void	ray_tex_init(t_data *data)
+{
+	data->draw.wall_height = (int)(HEIGHT / data->ray.perp_dist);
+	data->draw.start = (-data->draw.wall_height) / 2 + HEIGHT / 2;
+	if (data->draw.start < 0)
+		data->draw.start = 0;
+	data->draw.end = data->draw.wall_height / 2 + HEIGHT / 2;
+	if (data->draw.end >= HEIGHT)
+		data->draw.end = HEIGHT - 1;
+}
 
+void	ray_tex_draw(t_data *data, int x)
+{
+	int	y;
+
+	y = 0;
+	while (y < HEIGHT)
+	{
+		if (y < data->draw.start)
+			my_mlx_pixel_put(data, x, y, BLUE_PIXEL);
+		else if (y <= data->draw.end)
+			my_mlx_pixel_put(data, x, y, RED_PIXEL);
+		else
+			my_mlx_pixel_put(data, x, y, BLUE_PIXEL);
+	}
+}
 
 void	draw_dda(t_data *data)
 {
@@ -101,6 +126,8 @@ void	draw_dda(t_data *data)
 		ray_init(data, x);
 		side_dist(data);
 		dda_calc(data, &side);
+		ray_tex_init(data);
+		ray_tex_draw(data, x);
 		x++;
 	}
 }

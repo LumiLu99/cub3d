@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/03 15:04:45 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/07 17:33:21 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <math.h>
+# include <sys/time.h>
 
 // Colours
 # define RED_PIXEL 0xFF0000
@@ -105,6 +106,13 @@ typedef struct s_img
 	int		line_len;
 }	t_img;
 
+typedef struct s_draw
+{
+	int	wall_height;
+	int	start;
+	int	end;
+}	t_draw;
+
 typedef struct s_data
 {
 	void	*mlx;
@@ -115,6 +123,7 @@ typedef struct s_data
 	t_minimap	mini;
 	t_time		time;
 	t_ray		ray;
+	t_draw		draw;
 }	t_data;
 
 
@@ -129,6 +138,9 @@ int	on_keyrelease(int keysym, t_data *data);
 
 // raycasting
 void	draw_dda(t_data *data);
+void	side_dist(t_data *data);
+void	ray_tex_init(t_data *data);
+void	ray_tex_draw(t_data *data, int x);
 
 // init
 void	init_mlx(t_data *data);
@@ -136,5 +148,7 @@ void	init_player(t_player *player);
 
 // utils
 void	print_error_exit(char *str);
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+
 
 #endif
