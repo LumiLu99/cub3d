@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 00:19:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/07 15:37:24 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/10 18:09:17 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ static void	ray_init(t_data *data, int x)
     if (data->ray.ray_dir_y == 0)
         data->ray.delta_y = INFINITY;
     else
+	{
         data->ray.delta_y = fabs(1 / data->ray.ray_dir_y);
+	}
 	data->ray.map_x = (int)(data->player.pos_x);
 	data->ray.map_y = (int)(data->player.pos_y);
 }
@@ -52,10 +54,10 @@ void	side_dist(t_data *data)
 	else
 	{
 		data->ray.side_n_y = 1;
-		data->ray.delta_y = ((data->ray.map_y + 1)
-				- data->player.pos_y) * data->ray.side_dist_y;
+		data->ray.side_dist_y = ((data->ray.map_y + 1)
+				- data->player.pos_y) * data->ray.delta_y;
 	}
-}	
+}
 
 static void	dda_calc(t_data *data, int *side)
 {
@@ -72,11 +74,11 @@ static void	dda_calc(t_data *data, int *side)
 		}
 		else
 		{
-			data->ray.side_dist_y += data->ray.side_dist_y;
-			data->ray.map_y += data->ray.side_n_x;
+			data->ray.side_dist_y += data->ray.delta_y;
+			data->ray.map_y += data->ray.side_n_y;
 			*side = 1;
 		}
-		if (data->map.map_arr[data->ray.map_x][data->ray.map_y] > 0)
+		if (data->map.map_arr[data->ray.map_y][data->ray.map_x] != '0')
 			hit = 1;
 		if (*side == 0)
 			data->ray.perp_dist = (data->ray.map_x - data->player.pos_x

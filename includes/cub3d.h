@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/07 17:33:21 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/10 17:20:01 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,12 @@ typedef struct s_player
 
 typedef struct s_time
 {
-	double	time;
-	double	old_time;
+	long long	time;
+	long long	old_time;
+	long long	delta_time;
+	int			fps;
+	int			fps_count;
+	long long	start_time;
 }	t_time;
 
 typedef struct s_ray
@@ -147,8 +151,9 @@ void	init_mlx(t_data *data);
 void	init_player(t_player *player);
 
 // utils
-void	print_error_exit(char *str);
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
-
+void		print_error_exit(char *str);
+void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
+long long	get_time_in_ms(void);
+void		print_fps(t_data *data);
 
 #endif

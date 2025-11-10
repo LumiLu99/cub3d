@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 21:13:12 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/07 17:45:24 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/10 19:00:17 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,25 @@ int	ft_close(t_data *data)
 
 void	print_fps(t_data *data)
 {
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	
+	printf("Inside fps hehe\n");
+	data->time.time = get_time_in_ms();
+	data->time.delta_time = (data->time.time - data->time.old_time) / 1000.0;
+	data->time.old_time = data->time.time;
+	data->time.fps_count++;
+	if (data->time.time - data->time.start_time >= 1000)
+	{
+		data->time.fps = data->time.fps_count;
+		printf("FPS: %d\n", data->time.fps);
+		data->time.fps_count = 0;
+		data->time.start_time = data->time.time;
+	}
+	printf("After fps hehe\n");
 }
 
 long long	get_time_in_ms(void)
 {
 	struct timeval	tv;
+
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }

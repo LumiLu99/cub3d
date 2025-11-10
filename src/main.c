@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/07 15:29:52 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/10 19:01:27 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 static void	init_data(t_data *data)
 {
 	ft_bzero(data, sizeof(t_data));
-	data->map.map_arr[0] = "11111111";
-	data->map.map_arr[1] = "10000001";
-	data->map.map_arr[2] = "10000011";
-	data->map.map_arr[3] = "10010001";
-	data->map.map_arr[4] = "10000001";
-	data->map.map_arr[5] = "1100N001";
-	data->map.map_arr[6] = "10000001";
-	data->map.map_arr[7] = "11111111";
+	data->map.map_arr[0] = "11111111111";
+	data->map.map_arr[1] = "10000000001";
+	data->map.map_arr[2] = "10000000001";
+	data->map.map_arr[3] = "10000000001";
+	data->map.map_arr[4] = "10000000001";
+	data->map.map_arr[5] = "10000000001";
+	data->map.map_arr[6] = "10000000001";
+	data->map.map_arr[7] = "11111111111";
 	init_mlx(data);
 	init_player(&data->player);
 }
@@ -44,6 +44,19 @@ void	init_mlx(t_data *data)
 		print_error_exit("img addr init failed!\n");
 }
 
+void	init_fps(t_data *data)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	data->time.time = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	data->time.old_time = data->time.time;
+	data->time.start_time = data->time.time;
+	data->time.delta_time = 0.0;
+	data->time.fps_count = 0;
+	data->time.fps = 0;
+}
+
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -59,12 +72,12 @@ static void	print_player_pixel(t_data *data)
 {
 	int i = 0;
 	int j = 0;
-	while (i < 5)
+	while (i < 10)
 	{
 		j = 0;
-		while (j < 5)
+		while (j < 10)
 		{
-			my_mlx_pixel_put(data, data->player.x + i, data->player.y + j, RED_PIXEL);
+			my_mlx_pixel_put(data, (data->player.pos_x) + i, (data->player.pos_y) + j, RED_PIXEL);
 			j++;
 		}
 		i++;
@@ -124,11 +137,12 @@ int	update(void *param)
 {
 	t_data	*data;
 	data = (t_data *)param;
+	print_fps(data);
 	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
 	print_minimap(data);
 	print_player_pixel(data);
-	draw_dda(data);
+	// draw_dda(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }
@@ -143,9 +157,9 @@ int main(int argc, char **argv)
 		init_data(&data);
 		mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 		mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
-		mlx_loop_hook(data.mlx, update, &data);
 		mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 			ft_close, &data);
+		mlx_loop_hook(data.mlx, update, &data);
 		mlx_loop(data.mlx);
 	}
 	else
