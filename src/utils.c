@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 21:13:12 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/10 19:00:17 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/11 18:36:53 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	ft_close(t_data *data)
 
 void	print_fps(t_data *data)
 {
-	printf("Inside fps hehe\n");
 	data->time.time = get_time_in_ms();
 	data->time.delta_time = (data->time.time - data->time.old_time) / 1000.0;
 	data->time.old_time = data->time.time;
@@ -42,7 +41,6 @@ void	print_fps(t_data *data)
 		data->time.fps_count = 0;
 		data->time.start_time = data->time.time;
 	}
-	printf("After fps hehe\n");
 }
 
 long long	get_time_in_ms(void)

@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/10 17:20:01 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/11 19:06:41 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,15 @@
 
 # define FOV_DEGREE 60
 
+// Side
+# define NORTH 1
+# define EAST 2
+# define SOUTH 3
+# define WEST 4
+
 typedef struct s_map
 {
-	char	*map_arr[8];
+	char	*map_arr[14];
 	int		x_len_map;
 	int		y_len_map;
 
@@ -99,6 +105,11 @@ typedef struct s_ray
 	double	side_dist_x;
 	double	side_dist_y;
 	double	perp_dist;
+	int		hit;
+	int		side;
+	int		wall_height;
+	int		draw_start;
+	int		draw_end;
 }	t_ray;
 
 typedef struct s_img
@@ -110,13 +121,6 @@ typedef struct s_img
 	int		line_len;
 }	t_img;
 
-typedef struct s_draw
-{
-	int	wall_height;
-	int	start;
-	int	end;
-}	t_draw;
-
 typedef struct s_data
 {
 	void	*mlx;
@@ -127,7 +131,6 @@ typedef struct s_data
 	t_minimap	mini;
 	t_time		time;
 	t_ray		ray;
-	t_draw		draw;
 }	t_data;
 
 
@@ -155,5 +158,6 @@ void		print_error_exit(char *str);
 void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 long long	get_time_in_ms(void);
 void		print_fps(t_data *data);
+void    img_pixel_put(t_data *data, int x, int y, int color);
 
 #endif

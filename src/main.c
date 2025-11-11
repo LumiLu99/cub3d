@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/10 19:01:27 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/11 19:36:37 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,13 @@ static void	init_data(t_data *data)
 	data->map.map_arr[4] = "10000000001";
 	data->map.map_arr[5] = "10000000001";
 	data->map.map_arr[6] = "10000000001";
-	data->map.map_arr[7] = "11111111111";
+	data->map.map_arr[7] = "10000000001";
+	data->map.map_arr[8] = "10000000001";
+	data->map.map_arr[9] = "10000000001";
+	data->map.map_arr[10] = "10000000001";
+	data->map.map_arr[11] = "10000000001";
+	data->map.map_arr[12] = "10000000001";
+	data->map.map_arr[13] = "11111111111";
 	init_mlx(data);
 	init_player(&data->player);
 }
@@ -42,6 +48,24 @@ void	init_mlx(t_data *data)
 			&data->img.line_len, &data->img.endian);
 	if (!data->img.addr)
 		print_error_exit("img addr init failed!\n");
+}
+
+void	init_player(t_player *player)
+{
+	player->pos_x = 4.5;
+	player->pos_y = 6.5;
+	player->dir_x = -1.0;
+	player->dir_y = 0.0;
+	player->plane_x = 0.0;
+	player->plane_y = 0.66;
+	player->angle = PI / 2; // player facing down
+
+	player->key_up = false;
+	player->key_down = false;
+	player->key_left = false;
+	player->key_right = false;
+	player->left_rotate = false;
+	player->right_rotate = false;
 }
 
 void	init_fps(t_data *data)
@@ -68,70 +92,70 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-static void	print_player_pixel(t_data *data)
-{
-	int i = 0;
-	int j = 0;
-	while (i < 10)
-	{
-		j = 0;
-		while (j < 10)
-		{
-			my_mlx_pixel_put(data, (data->player.pos_x) + i, (data->player.pos_y) + j, RED_PIXEL);
-			j++;
-		}
-		i++;
-	}
-}
+// static void	print_player_pixel(t_data *data)
+// {
+// 	int i = 0;
+// 	int j = 0;
+// 	while (i < 10)
+// 	{
+// 		j = 0;
+// 		while (j < 10)
+// 		{
+// 			my_mlx_pixel_put(data, (data->player.pos_x) + i, (data->player.pos_y) + j, RED_PIXEL);
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }
 
-static void	print_minimap(t_data *data)
-{
-	int i = 0;
-	int j = 0;
-	int mx = 0;
-	int my = 0;
-	int x = 0;
-	int y = 0;
-	while (data->map.map_arr[i])
-	{
-		j = 0;
-		while (data->map.map_arr[i][j])
-		{
-			x = j * TILE_SIZE;
-			y = i * TILE_SIZE;
-			if (data->map.map_arr[i][j] == '1')
-			{
-				mx = 0;
-				while (mx < TILE_SIZE)
-				{
-					my = 0;
-					while (my < TILE_SIZE)
-					{
-						my_mlx_pixel_put(data, x + mx, y + my, WHITE_PIXEL);
-						my++;
-					}
-					mx++;
-				}
-			}
-			else
-			{
-				mx = 0;
-				while (mx < TILE_SIZE)
-				{
-					my = 0;
-					while (my < TILE_SIZE)
-					{
-						my_mlx_pixel_put(data, x + mx, y + my, GRAY_PIXEL);
-						my++;
-					}
-					mx++;
-				}
-			}
-			j++;
-		}
-		i++;
-	}
-}
+// static void	print_minimap(t_data *data)
+// {
+// 	int i = 0;
+// 	int j = 0;
+// 	int mx = 0;
+// 	int my = 0;
+// 	int x = 0;
+// 	int y = 0;
+// 	while (data->map.map_arr[i])
+// 	{
+// 		j = 0;
+// 		while (data->map.map_arr[i][j])
+// 		{
+// 			x = j * TILE_SIZE;
+// 			y = i * TILE_SIZE;
+// 			if (data->map.map_arr[i][j] == '1')
+// 			{
+// 				mx = 0;
+// 				while (mx < TILE_SIZE)
+// 				{
+// 					my = 0;
+// 					while (my < TILE_SIZE)
+// 					{
+// 						my_mlx_pixel_put(data, x + mx, y + my, WHITE_PIXEL);
+// 						my++;
+// 					}
+// 					mx++;
+// 				}
+// 			}
+// 			else
+// 			{
+// 				mx = 0;
+// 				while (mx < TILE_SIZE)
+// 				{
+// 					my = 0;
+// 					while (my < TILE_SIZE)
+// 					{
+// 						my_mlx_pixel_put(data, x + mx, y + my, GRAY_PIXEL);
+// 						my++;
+// 					}
+// 					mx++;
+// 				}
+// 			}
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }
 
 int	update(void *param)
 {
@@ -140,9 +164,12 @@ int	update(void *param)
 	print_fps(data);
 	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
-	print_minimap(data);
-	print_player_pixel(data);
-	// draw_dda(data);
+	// print_minimap(data);
+	// print_player_pixel(data);
+	draw_dda(data);
+	if (data->player.key_up)
+		printf("We going up up up\n");
+	printf("Player position: x = %f, y = %f\n", data->player.pos_x, data->player.pos_y);
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }
