@@ -136,12 +136,12 @@ void	ray_tex_draw(t_data *data, int x)
 	{
 		if (y < data->ray.draw_start)
 		{
-			my_mlx_pixel_put(data, x, y, BLUE_PIXEL);
+			my_mlx_pixel_put(data, x, y, WHITE_PIXEL);
 		}
 		else if (y <= data->ray.draw_end)
-			my_mlx_pixel_put(data, x, y, RED_PIXEL);
-		else
 			my_mlx_pixel_put(data, x, y, BLUE_PIXEL);
+		else
+			my_mlx_pixel_put(data, x, y, GRAY_PIXEL);
 		y++;
 	}
 }

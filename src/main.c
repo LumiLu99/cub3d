@@ -16,9 +16,9 @@ static void	init_data(t_data *data)
 {
 	ft_bzero(data, sizeof(t_data));
 	data->map.map_arr[0] = "11111111111";
-	data->map.map_arr[1] = "10000000001";
+	data->map.map_arr[1] = "11110000001";
 	data->map.map_arr[2] = "10000000001";
-	data->map.map_arr[3] = "10000000001";
+	data->map.map_arr[3] = "10000011001";
 	data->map.map_arr[4] = "10000000001";
 	data->map.map_arr[5] = "10000000001";
 	data->map.map_arr[6] = "10000000001";
@@ -92,70 +92,70 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-// static void	print_player_pixel(t_data *data)
-// {
-// 	int i = 0;
-// 	int j = 0;
-// 	while (i < 10)
-// 	{
-// 		j = 0;
-// 		while (j < 10)
-// 		{
-// 			my_mlx_pixel_put(data, (data->player.pos_x) + i, (data->player.pos_y) + j, RED_PIXEL);
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// }
+static void	print_player_pixel(t_data *data)
+{
+	int i = 0;
+	int j = 0;
+	while (i < 10)
+	{
+		j = 0;
+		while (j < 10)
+		{
+			my_mlx_pixel_put(data, (data->player.pos_x) + i, (data->player.pos_y) + j, RED_PIXEL);
+			j++;
+		}
+		i++;
+	}
+}
 
-// static void	print_minimap(t_data *data)
-// {
-// 	int i = 0;
-// 	int j = 0;
-// 	int mx = 0;
-// 	int my = 0;
-// 	int x = 0;
-// 	int y = 0;
-// 	while (data->map.map_arr[i])
-// 	{
-// 		j = 0;
-// 		while (data->map.map_arr[i][j])
-// 		{
-// 			x = j * TILE_SIZE;
-// 			y = i * TILE_SIZE;
-// 			if (data->map.map_arr[i][j] == '1')
-// 			{
-// 				mx = 0;
-// 				while (mx < TILE_SIZE)
-// 				{
-// 					my = 0;
-// 					while (my < TILE_SIZE)
-// 					{
-// 						my_mlx_pixel_put(data, x + mx, y + my, WHITE_PIXEL);
-// 						my++;
-// 					}
-// 					mx++;
-// 				}
-// 			}
-// 			else
-// 			{
-// 				mx = 0;
-// 				while (mx < TILE_SIZE)
-// 				{
-// 					my = 0;
-// 					while (my < TILE_SIZE)
-// 					{
-// 						my_mlx_pixel_put(data, x + mx, y + my, GRAY_PIXEL);
-// 						my++;
-// 					}
-// 					mx++;
-// 				}
-// 			}
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// }
+static void	print_minimap(t_data *data)
+{
+	int i = 0;
+	int j = 0;
+	int mx = 0;
+	int my = 0;
+	int x = 0;
+	int y = 0;
+	while (data->map.map_arr[i])
+	{
+		j = 0;
+		while (data->map.map_arr[i][j])
+		{
+			x = j * TILE_SIZE;
+			y = i * TILE_SIZE;
+			if (data->map.map_arr[i][j] == '1')
+			{
+				mx = 0;
+				while (mx < TILE_SIZE)
+				{
+					my = 0;
+					while (my < TILE_SIZE)
+					{
+						my_mlx_pixel_put(data, x + mx, y + my, WHITE_PIXEL);
+						my++;
+					}
+					mx++;
+				}
+			}
+			else
+			{
+				mx = 0;
+				while (mx < TILE_SIZE)
+				{
+					my = 0;
+					while (my < TILE_SIZE)
+					{
+						my_mlx_pixel_put(data, x + mx, y + my, GRAY_PIXEL);
+						my++;
+					}
+					mx++;
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+}
 
 int	update(void *param)
 {
@@ -164,12 +164,9 @@ int	update(void *param)
 	print_fps(data);
 	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
-	// print_minimap(data);
-	// print_player_pixel(data);
+	print_minimap(data);
+	print_player_pixel(data);
 	draw_dda(data);
-	if (data->player.key_up)
-		printf("We going up up up\n");
-	printf("Player position: x = %f, y = %f\n", data->player.pos_x, data->player.pos_y);
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }
