@@ -34,10 +34,10 @@
 # define HEIGHT 720
 
 // Textures
-# define TEX_SIZE 50
+# define TEX_SIZE 64
 
 // Tile size
-# define TILE_SIZE 64
+# define TILE_SIZE 20
 
 // Maths
 # define PI 3.14159265359

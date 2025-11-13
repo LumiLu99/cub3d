@@ -96,12 +96,12 @@ static void	print_player_pixel(t_data *data)
 {
 	int i = 0;
 	int j = 0;
-	while (i < 10)
+	while (i < 4)
 	{
 		j = 0;
-		while (j < 10)
+		while (j < 4)
 		{
-			my_mlx_pixel_put(data, (data->player.pos_x) + i, (data->player.pos_y) + j, RED_PIXEL);
+			my_mlx_pixel_put(data, (data->player.pos_x * TILE_SIZE) + i, (data->player.pos_y * TILE_SIZE) + j, RED_PIXEL);
 			j++;
 		}
 		i++;
@@ -164,9 +164,9 @@ int	update(void *param)
 	print_fps(data);
 	move_player(data);
 	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
+	draw_dda(data);
 	print_minimap(data);
 	print_player_pixel(data);
-	draw_dda(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }
