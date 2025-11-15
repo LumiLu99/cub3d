@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 11:54:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/11 19:36:25 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/15 21:40:43 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void    move_player(t_data *data)
     double  next_y;
     double  rot_speed;
 
-    move_speed = 0.03;
+    move_speed = 3.0 * data->time.delta_time;
     rot_speed = 0.03;
     if (data->player.key_up)
     {

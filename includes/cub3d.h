@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/11 19:06:41 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/15 22:21:06 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,8 @@
 # define GRAY_PIXEL 0x808080
 
 // Window
-# define WIDTH 1280
-# define HEIGHT 720
-
-// Textures
-# define TEX_SIZE 64
+# define WIDTH 1920
+# define HEIGHT 1080
 
 // Tile size
 # define TILE_SIZE 20
@@ -45,10 +42,11 @@
 # define FOV_DEGREE 60
 
 // Side
-# define NORTH 1
-# define EAST 2
-# define SOUTH 3
-# define WEST 4
+# define TEX_SIZE 4
+# define NORTH 0
+# define EAST 1
+# define SOUTH 2
+# define WEST 3
 
 typedef struct s_map
 {
@@ -85,7 +83,7 @@ typedef struct s_time
 {
 	long long	time;
 	long long	old_time;
-	long long	delta_time;
+	double	delta_time;
 	int			fps;
 	int			fps_count;
 	long long	start_time;
@@ -119,6 +117,9 @@ typedef struct s_img
 	int		endian;
 	int		bits_per_pixel;
 	int		line_len;
+	int		img_height;
+	int		img_width;
+	char	*tex_path;
 }	t_img;
 
 typedef struct s_data
@@ -126,7 +127,8 @@ typedef struct s_data
 	void	*mlx;
 	void	*win;
 	t_player	player;
-	t_img		img;
+	t_img		img_mlx;
+	t_img		tex[TEX_SIZE];
 	t_map		map;
 	t_minimap	mini;
 	t_time		time;
@@ -158,6 +160,5 @@ void		print_error_exit(char *str);
 void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 long long	get_time_in_ms(void);
 void		print_fps(t_data *data);
-void    img_pixel_put(t_data *data, int x, int y, int color);
 
 #endif
