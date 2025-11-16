@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/11 19:36:37 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/16 12:02:50 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	init_data(t_data *data)
 {
+	int i = 0;
 	ft_bzero(data, sizeof(t_data));
 	data->map.map_arr[0] = "11111111111";
 	data->map.map_arr[1] = "11110000001";
@@ -29,6 +30,11 @@ static void	init_data(t_data *data)
 	data->map.map_arr[11] = "10000000001";
 	data->map.map_arr[12] = "10000000001";
 	data->map.map_arr[13] = "11111111111";
+	while (i < TEX_SIZE)
+	{
+		data->tex[i].tex_path = "textures/greystone.xpm";
+		i++;
+	}
 	init_mlx(data);
 	init_player(&data->player);
 }
@@ -38,15 +44,15 @@ void	init_mlx(t_data *data)
 	data->mlx = mlx_init();
 	if (!data->mlx)
 		print_error_exit("mlx init failed!\n");
-	data->win = mlx_new_window(data->mlx, 1024, 764, "Cub3D");
+	data->win = mlx_new_window(data->mlx, WIDTH, HEIGHT, "Cub3D");
 	if (!data->win)
 		print_error_exit("win init failed!\n");
-	data->img.img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
-	if (!data->img.img)
-		print_error_exit("img init failed!\n");
-	data->img.addr = mlx_get_data_addr(data->img.img, &data->img.bits_per_pixel, 
-			&data->img.line_len, &data->img.endian);
-	if (!data->img.addr)
+	data->img_mlx.img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
+	if (!data->img_mlx.img)
+		print_error_exit("img_mlx init failed!\n");
+	data->img_mlx.addr = mlx_get_data_addr(data->img_mlx.img, &data->img_mlx.bits_per_pixel, 
+			&data->img_mlx.line_len, &data->img_mlx.endian);
+	if (!data->img_mlx.addr)
 		print_error_exit("img addr init failed!\n");
 }
 
@@ -58,7 +64,6 @@ void	init_player(t_player *player)
 	player->dir_y = 0.0;
 	player->plane_x = 0.0;
 	player->plane_y = 0.66;
-	player->angle = PI / 2; // player facing down
 
 	player->key_up = false;
 	player->key_down = false;
@@ -88,7 +93,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 
 	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
         return ;
-	dst = data->img.addr + (y * data->img.line_len + x * (data->img.bits_per_pixel / 8));
+	dst = data->img_mlx.addr + (y * data->img_mlx.line_len + x * (data->img_mlx.bits_per_pixel / 8));
 	*(unsigned int*)dst = color;
 }
 
@@ -270,12 +275,12 @@ int	update(void *param)
 	data = (t_data *)param;
 	print_fps(data);
 	move_player(data);
-	ft_bzero(data->img.addr, WIDTH * HEIGHT * (data->img.bits_per_pixel / 8));
+	ft_bzero(data->img_mlx.addr, WIDTH * HEIGHT * (data->img_mlx.bits_per_pixel / 8));
 	draw_dda(data);
 	print_minimap(data);
 	print_player_pixel(data);
 	draw_rays_minimap(data);
-	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
+	mlx_put_image_to_window(data->mlx, data->win, data->img_mlx.img, 0, 0);
 	return (0);
 }
 

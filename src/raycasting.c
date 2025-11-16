@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 00:19:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/11 18:50:03 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/15 22:49:33 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,11 @@ void	ray_tex_init(t_data *data)
 	data->ray.draw_end = data->ray.wall_height / 2 + (HEIGHT / 2);
 	if (data->ray.draw_end >= HEIGHT)
 		data->ray.draw_end = HEIGHT - 1;
+}
+
+void	ray_tex_sides(t_data *data, int x)
+{
+	
 }
 
 void	ray_tex_draw(t_data *data, int x)
