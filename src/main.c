@@ -131,7 +131,7 @@ static void	print_minimap(t_data *data)
 					my = 0;
 					while (my < TILE_SIZE)
 					{
-						my_mlx_pixel_put(data, x + mx, y + my, WHITE_PIXEL);
+						my_mlx_pixel_put(data, x + mx, y + my, GRAY_PIXEL);
 						my++;
 					}
 					mx++;
@@ -145,7 +145,7 @@ static void	print_minimap(t_data *data)
 					my = 0;
 					while (my < TILE_SIZE)
 					{
-						my_mlx_pixel_put(data, x + mx, y + my, GRAY_PIXEL);
+						my_mlx_pixel_put(data, x + mx, y + my, WHITE_PIXEL);
 						my++;
 					}
 					mx++;
@@ -155,6 +155,113 @@ static void	print_minimap(t_data *data)
 		}
 		i++;
 	}
+}
+
+void draw_line(t_data *data, double x1, double y1, double x2, double y2)
+{
+    double delta_x = x2 - x1;
+    double delta_y = y2 - y1;
+    double step = (fabs(delta_x) > fabs(delta_y)) ? fabs(delta_x) : fabs(delta_y);
+    
+    double dx = delta_x / step;
+    double dy = delta_y / step;
+    
+    double x = x1;
+    double y = y1;
+    int i = 0;
+
+    while (i <= step)
+    {
+        my_mlx_pixel_put(data, x, y, GREEN_PIXEL); // Ray color
+        x += dx;
+        y += dy;
+        i++;
+    }
+}
+
+void draw_rays_minimap(t_data *data)
+{
+    int x = 0;
+    
+    // Loop through every vertical slice of the screen (0 to WIDTH)
+    // This creates the fan/cone shape
+    while (x < WIDTH)
+    {
+        // 1. Calculate Ray Direction
+        double camera_x = 2 * x / (double)WIDTH - 1;
+        double ray_dir_x = data->player.dir_x + data->player.plane_x * camera_x;
+        double ray_dir_y = data->player.dir_y + data->player.plane_y * camera_x;
+
+        // 2. Map Check Variables
+        int map_x = (int)data->player.pos_x;
+        int map_y = (int)data->player.pos_y;
+
+        double delta_dist_x = (ray_dir_x == 0) ? 1e30 : fabs(1 / ray_dir_x);
+        double delta_dist_y = (ray_dir_y == 0) ? 1e30 : fabs(1 / ray_dir_y);
+
+        double side_dist_x;
+        double side_dist_y;
+        int step_x;
+        int step_y;
+        int hit = 0;
+        int side;
+
+        // 3. Calculate Step
+        if (ray_dir_x < 0) {
+            step_x = -1;
+            side_dist_x = (data->player.pos_x - map_x) * delta_dist_x;
+        } else {
+            step_x = 1;
+            side_dist_x = (map_x + 1.0 - data->player.pos_x) * delta_dist_x;
+        }
+        if (ray_dir_y < 0) {
+            step_y = -1;
+            side_dist_y = (data->player.pos_y - map_y) * delta_dist_y;
+        } else {
+            step_y = 1;
+            side_dist_y = (map_y + 1.0 - data->player.pos_y) * delta_dist_y;
+        }
+
+        // 4. DDA Loop (Find the wall)
+        while (hit == 0)
+        {
+            if (side_dist_x < side_dist_y) {
+                side_dist_x += delta_dist_x;
+                map_x += step_x;
+                side = 0;
+            } else {
+                side_dist_y += delta_dist_y;
+                map_y += step_y;
+                side = 1;
+            }
+            if (data->map.map_arr[map_y][map_x] == '1')
+                hit = 1;
+        }
+
+        // 5. Calculate End Point for the Line
+        // We need the exact distance to the wall to know where to stop drawing
+        double perp_wall_dist;
+        if (side == 0)
+            perp_wall_dist = (side_dist_x - delta_dist_x);
+        else
+            perp_wall_dist = (side_dist_y - delta_dist_y);
+
+        // Calculate exact pixel coordinates
+        // Start point (Player)
+        double start_x = data->player.pos_x * TILE_SIZE;
+        double start_y = data->player.pos_y * TILE_SIZE;
+
+        // End point (Player + Direction * Distance)
+        double end_x = (data->player.pos_x + ray_dir_x * perp_wall_dist) * TILE_SIZE;
+        double end_y = (data->player.pos_y + ray_dir_y * perp_wall_dist) * TILE_SIZE;
+
+        // 6. Draw the ray on minimap
+        draw_line(data, start_x, start_y, end_x, end_y);
+
+        // Optimization: Don't draw every single ray, it's too thick. 
+        // Skip some pixels to see the individual rays better (optional)
+        x += 1; 
+    }
 }
 
 int	update(void *param)
@@ -167,6 +274,7 @@ int	update(void *param)
 	draw_dda(data);
 	print_minimap(data);
 	print_player_pixel(data);
+	draw_rays_minimap(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img.img, 0, 0);
 	return (0);
 }

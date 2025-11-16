@@ -20,6 +20,7 @@ void    move_player(t_data *data)
     double  rot_speed;
 
     move_speed = 0.03;
+    printf("delta_time: %lld\n", data->time.delta_time);
     rot_speed = 0.03;
     if (data->player.key_up)
     {
