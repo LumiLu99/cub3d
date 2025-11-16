@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 00:19:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/16 21:36:42 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/16 22:24:20 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,10 @@ void	ray_tex_init(t_data *data)
 
 void	ray_tex_sides(t_data *data, int side)
 {
+	data->ray.wall_x = data->player.pos_x + data->ray.perp_dist * data->ray.ray_dir_x;
+	if (!side)
+		data->ray.wall_x = data->player.pos_y + data->ray.perp_dist * data->ray.ray_dir_y;
+	data->ray.wall_x -= floor(data->ray.wall_x);
 	if (!side)
 	{
 		if (data->ray.ray_dir_x > 0)
@@ -108,6 +112,25 @@ void	ray_tex_sides(t_data *data, int side)
 		else
 			data->ray.side = WEST;
 	}
+	data->ray.tex_num = (int)(data->ray.wall_x * (double)(data->tex[data->ray.side].img_width));
+	if ((!side && data->ray.ray_dir_x > 0)
+		|| (side && data->ray.ray_dir_y < 0))
+		data->ray.tex_num = data->tex[data->ray.side].img_width - data->ray.tex_num - 1;
+}
+
+void ray_tex_wall(t_data *data, int x, int y)
+{
+	int wall_step;
+	int	tex_y;
+	unsigned int	color;
+
+	wall_step = y * 2 - HEIGHT + data->ray.wall_height;
+	tex_y = (wall_step * data->tex[data->ray.side].img_height)
+		/ (2 * data->ray.wall_height);
+	color = *((unsigned int *)(data->tex[data->ray.side].addr
+			+ (tex_y * data->tex[data->ray.side].line_len
+				+ data->ray.tex_num * (data->tex[data->ray.side].bits_per_pixel / 8))));
+	my_mlx_pixel_put(data, x, y, color);
 }
 
 void	ray_tex_draw(t_data *data, int x)
@@ -122,7 +145,7 @@ void	ray_tex_draw(t_data *data, int x)
 			my_mlx_pixel_put(data, x, y, WHITE_PIXEL);
 		}
 		else if (y <= data->ray.draw_end)
-			my_mlx_pixel_put(data, x, y, BLUE_PIXEL);
+			ray_tex_wall(data, x, y);
 		else
 			my_mlx_pixel_put(data, x, y, GRAY_PIXEL);
 		y++;
@@ -141,7 +164,8 @@ void	draw_dda(t_data *data)
 		side_dist(data);
 		dda_calc(data, &side);
 		ray_tex_init(data);
-		ray_tex_draw(data, &side);
+		ray_tex_sides(data, side);
+		ray_tex_draw(data, x);
 		x++;
 	}
 }

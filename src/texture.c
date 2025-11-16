@@ -6,11 +6,11 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 13:52:51 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/15 22:22:07 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/16 22:25:54 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub3d.h"
+#include "../includes/cub3d.h"
 
 void	tex_init(t_data *data)
 {

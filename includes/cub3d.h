@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/16 21:01:24 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/17 00:40:49 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define GRAY_PIXEL 0x808080
 
 // Window
-# define WIDTH 1024
+# define WIDTH 1366
 # define HEIGHT 768
 
 // Tile size
@@ -50,7 +50,7 @@
 
 typedef struct s_map
 {
-	char	*map_arr[14];
+	char	*map_arr[16];
 	int		x_len_map;
 	int		y_len_map;
 
@@ -103,11 +103,12 @@ typedef struct s_ray
 	double	side_dist_x;
 	double	side_dist_y;
 	double	perp_dist;
-	int		hit;
 	int		side;
 	int		wall_height;
 	int		draw_start;
 	int		draw_end;
+	int		tex_num;
+	double	wall_x;
 }	t_ray;
 
 typedef struct s_img
@@ -150,6 +151,8 @@ void	draw_dda(t_data *data);
 void	side_dist(t_data *data);
 void	ray_tex_init(t_data *data);
 void	ray_tex_draw(t_data *data, int x);
+void	ray_tex_sides(t_data *data, int side);
+void	tex_init(t_data *data);
 
 // init
 void	init_mlx(t_data *data);

@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/16 20:59:27 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/17 00:45:34 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,30 @@ static void	init_data(t_data *data)
 {
 	int i = 0;
 	ft_bzero(data, sizeof(t_data));
-	data->map.map_arr[0] = "11111111111";
-	data->map.map_arr[1] = "11110000001";
-	data->map.map_arr[2] = "10000000001";
-	data->map.map_arr[3] = "10000011001";
-	data->map.map_arr[4] = "10000000001";
-	data->map.map_arr[5] = "10000000001";
-	data->map.map_arr[6] = "10000000001";
-	data->map.map_arr[7] = "10000000001";
-	data->map.map_arr[8] = "10001000001";
-	data->map.map_arr[9] = "10000000001";
-	data->map.map_arr[10] = "10000000001";
-	data->map.map_arr[11] = "1000011111001";
-	data->map.map_arr[12] = "10000000001";
-	data->map.map_arr[13] = "11111111111";
+	data->map.map_arr[0] = "1111111111111111111111111111111111111111111";
+	data->map.map_arr[1] = "1110000000001111100000000000111111111111111";
+	data->map.map_arr[2] = "1110000000000111110000000000001111111111111";
+	data->map.map_arr[3] = "1110001111110011111111111100000111111111111";
+	data->map.map_arr[4] = "1110001111100111110000111111111111111111111";
+	data->map.map_arr[5] = "1110001111100111111000011111111111111111111";
+	data->map.map_arr[6] = "1110001111100111111000011111111111111111111";
+	data->map.map_arr[7] = "1110001111100111111000011111111111111111111";
+	data->map.map_arr[8] = "1110001111100111111000011111111111111111111";
+	data->map.map_arr[9] = "1110001111111111001111111110000111111111111";
+	data->map.map_arr[10] = "1110000000000000000000111111100001111111111";
+	data->map.map_arr[11] = "1110000000000000000000000000000001111111111";
+	data->map.map_arr[12] = "1110000000000000000000111111100001111111111";
+	data->map.map_arr[13] = "1111111111111111001111111110000000000001111";
+	data->map.map_arr[14] = "1111111111000000000000111111111111111111111";
+	data->map.map_arr[15] = "1111111111111111111111111111111111111111111";
 	while (i < TEX_SIZE)
 	{
-		data->tex[i].tex_path = "textures/greystone.xpm";
+		data->tex[i].tex_path = strdup("textures/greystone.xpm");
 		i++;
 	}
 	init_mlx(data);
 	init_player(&data->player);
+	tex_init(data);
 }
 
 void	init_mlx(t_data *data)
@@ -58,8 +61,8 @@ void	init_mlx(t_data *data)
 
 void	init_player(t_player *player)
 {
-	player->pos_x = 4.5;
-	player->pos_y = 6.5;
+	player->pos_x = 5.5;
+	player->pos_y = 11.5;
 	player->dir_x = -1.0;
 	player->dir_y = 0.0;
 	player->plane_x = 0.0;
@@ -99,12 +102,12 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 
 static void	print_player_pixel(t_data *data)
 {
-	int i = 0;
-	int j = 0;
-	while (i < 4)
+	int i = -3;
+	int j = -3;
+	while (i < 3)
 	{
-		j = 0;
-		while (j < 4)
+		j = -3;
+		while (j < 3)
 		{
 			my_mlx_pixel_put(data, (data->player.pos_x * TILE_SIZE) + i, (data->player.pos_y * TILE_SIZE) + j, RED_PIXEL);
 			j++;
@@ -177,7 +180,7 @@ void draw_line(t_data *data, double x1, double y1, double x2, double y2)
 
     while (i <= step)
     {
-        my_mlx_pixel_put(data, x, y, GREEN_PIXEL); // Ray color
+        my_mlx_pixel_put(data, x, y, GREEN_PIXEL);
         x += dx;
         y += dy;
         i++;
@@ -188,16 +191,15 @@ void draw_rays_minimap(t_data *data)
 {
     int x = 0;
     
-    // Loop through every vertical slice of the screen (0 to WIDTH)
-    // This creates the fan/cone shape
+
     while (x < WIDTH)
     {
-        // 1. Calculate Ray Direction
+
         double camera_x = 2 * x / (double)WIDTH - 1;
         double ray_dir_x = data->player.dir_x + data->player.plane_x * camera_x;
         double ray_dir_y = data->player.dir_y + data->player.plane_y * camera_x;
 
-        // 2. Map Check Variables
+
         int map_x = (int)data->player.pos_x;
         int map_y = (int)data->player.pos_y;
 
@@ -211,7 +213,7 @@ void draw_rays_minimap(t_data *data)
         int hit = 0;
         int side;
 
-        // 3. Calculate Step
+
         if (ray_dir_x < 0) {
             step_x = -1;
             side_dist_x = (data->player.pos_x - map_x) * delta_dist_x;
@@ -226,8 +228,6 @@ void draw_rays_minimap(t_data *data)
             step_y = 1;
             side_dist_y = (map_y + 1.0 - data->player.pos_y) * delta_dist_y;
         }
-
-        // 4. DDA Loop (Find the wall)
         while (hit == 0)
         {
             if (side_dist_x < side_dist_y) {
@@ -242,29 +242,21 @@ void draw_rays_minimap(t_data *data)
             if (data->map.map_arr[map_y][map_x] == '1')
                 hit = 1;
         }
-
-        // 5. Calculate End Point for the Line
-        // We need the exact distance to the wall to know where to stop drawing
         double perp_wall_dist;
         if (side == 0)
             perp_wall_dist = (side_dist_x - delta_dist_x);
         else
             perp_wall_dist = (side_dist_y - delta_dist_y);
 
-        // Calculate exact pixel coordinates
-        // Start point (Player)
+
         double start_x = data->player.pos_x * TILE_SIZE;
         double start_y = data->player.pos_y * TILE_SIZE;
 
-        // End point (Player + Direction * Distance)
         double end_x = (data->player.pos_x + ray_dir_x * perp_wall_dist) * TILE_SIZE;
         double end_y = (data->player.pos_y + ray_dir_y * perp_wall_dist) * TILE_SIZE;
 
-        // 6. Draw the ray on minimap
         draw_line(data, start_x, start_y, end_x, end_y);
 
-        // Optimization: Don't draw every single ray, it's too thick. 
-        // Skip some pixels to see the individual rays better (optional)
         x += 1; 
     }
 }

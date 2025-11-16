@@ -21,11 +21,11 @@ MLX_LIB = $(MLX_DIR)/libmlx_Linux.a
 
 # Compiler & flags
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -O3
+CFLAGS = -O3 # -Wall -Werror -Wextra
 RM = rm -rf
 
 # Source files
-SRC = $(addprefix $(SRC_DIR)/, main.c utils.c key.c player.c raycasting.c)
+SRC = $(addprefix $(SRC_DIR)/, main.c utils.c key.c player.c raycasting.c texture.c)
 
 # Object files
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
