@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/16 12:02:50 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/16 20:59:27 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ static void	init_data(t_data *data)
 	data->map.map_arr[5] = "10000000001";
 	data->map.map_arr[6] = "10000000001";
 	data->map.map_arr[7] = "10000000001";
-	data->map.map_arr[8] = "10000000001";
+	data->map.map_arr[8] = "10001000001";
 	data->map.map_arr[9] = "10000000001";
 	data->map.map_arr[10] = "10000000001";
-	data->map.map_arr[11] = "10000000001";
+	data->map.map_arr[11] = "1000011111001";
 	data->map.map_arr[12] = "10000000001";
 	data->map.map_arr[13] = "11111111111";
 	while (i < TEX_SIZE)

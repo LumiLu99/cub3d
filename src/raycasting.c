@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 00:19:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/15 22:49:33 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/16 21:36:42 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,41 +81,6 @@ static void	dda_calc(t_data *data, int *side)
 	}
 }
 
-// void	calc_dda(t_data *data)
-// {
-// 	int i = 0;
-// 	printf("Coming in calc_dda\n");
-// 	while (data->ray.hit == 0)
-// 	{
-// 		printf("Entered while loop start calc_dda\n");
-// 		if (data->ray.side_dist_x < data->ray.side_dist_y)
-// 		{
-// 			data->ray.side_dist_x += data->ray.delta_x;
-// 			data->ray.map_x += data->ray.side_n_x;
-// 			if (data->ray.side_n_x == -1)
-// 				data->ray.side = EAST;
-// 			else
-// 				data->ray.side = WEST;
-// 		}
-// 		else
-// 		{
-// 			data->ray.side_dist_y += data->ray.delta_y;
-// 			data->ray.map_y += data->ray.side_n_y;
-// 			if (data->ray.side_n_y == -1)
-// 				data->ray.side = SOUTH;
-// 			else
-// 				data->ray.side = NORTH;
-// 		}
-// 		printf("Map y: %d, Map x: %d\n", data->ray.map_y, data->ray.map_y);
-// 		if (data->map.map_arr[data->ray.map_y][data->ray.map_x] == '1')
-// 			data->ray.hit = 1;
-// 		if (i > 1000)
-// 			data->ray.hit = 1;
-// 		printf("%d", i);
-// 	}
-// 	printf("Leaving calc_dda");
-// }
-
 void	ray_tex_init(t_data *data)
 {
 	data->ray.wall_height = (int)(HEIGHT / data->ray.perp_dist);
@@ -127,9 +92,22 @@ void	ray_tex_init(t_data *data)
 		data->ray.draw_end = HEIGHT - 1;
 }
 
-void	ray_tex_sides(t_data *data, int x)
+void	ray_tex_sides(t_data *data, int side)
 {
-	
+	if (!side)
+	{
+		if (data->ray.ray_dir_x > 0)
+			data->ray.side = NORTH;
+		else
+			data->ray.side = SOUTH;
+	}
+	else
+	{
+		if (data->ray.ray_dir_y > 0)
+			data->ray.side = EAST;
+		else
+			data->ray.side = WEST;
+	}
 }
 
 void	ray_tex_draw(t_data *data, int x)
@@ -163,7 +141,7 @@ void	draw_dda(t_data *data)
 		side_dist(data);
 		dda_calc(data, &side);
 		ray_tex_init(data);
-		ray_tex_draw(data, x);
+		ray_tex_draw(data, &side);
 		x++;
 	}
 }
