@@ -6,21 +6,29 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 00:19:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/16 22:24:20 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/21 14:25:09 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-static void	ray_init(t_data *data, int x)
+static void ray_init(t_data *data, int x)
 {
-	data->ray.camera_x = (2 * x) / (double)(WIDTH) - 1;
-	data->ray.ray_dir_x = data->player.dir_x + (data->player.plane_x * data->ray.camera_x);
-	data->ray.ray_dir_y = data->player.dir_y + (data->player.plane_y * data->ray.camera_x);
-    data->ray.delta_x = fabs(1 / data->ray.ray_dir_x);
-    data->ray.delta_y = fabs(1 / data->ray.ray_dir_y);
-	data->ray.map_x = (int)(data->player.pos_x);
-	data->ray.map_y = (int)(data->player.pos_y);
+    data->ray.camera_x = (2 * x) / (double)(WIDTH) - 1;
+    data->ray.ray_dir_x = data->player.dir_x + (data->player.plane_x * data->ray.camera_x);
+    data->ray.ray_dir_y = data->player.dir_y + (data->player.plane_y * data->ray.camera_x);
+    if (data->ray.ray_dir_x == 0)
+        data->ray.delta_x = 1e30;
+    else
+        data->ray.delta_x = fabs(1 / data->ray.ray_dir_x);
+
+    if (data->ray.ray_dir_y == 0)
+        data->ray.delta_y = 1e30;
+    else
+        data->ray.delta_y = fabs(1 / data->ray.ray_dir_y);
+
+    data->ray.map_x = (int)(data->player.pos_x);
+    data->ray.map_y = (int)(data->player.pos_y);
 }
 
 void	side_dist(t_data *data)
@@ -51,34 +59,36 @@ void	side_dist(t_data *data)
 	}
 }
 
-static void	dda_calc(t_data *data, int *side)
+static void dda_calc(t_data *data, int *side)
 {
-	int	hit;
+    int  hit;
+    char tile;
 
-	hit = 0;
-	while (hit == 0)
-	{
-		if (data->ray.side_dist_x < data->ray.side_dist_y)
-		{
-			data->ray.side_dist_x += data->ray.delta_x;
-			data->ray.map_x += data->ray.side_n_x;
-			*side = 0;
-		}
-		else
-		{
-			data->ray.side_dist_y += data->ray.delta_y;
-			data->ray.map_y += data->ray.side_n_y;
-			*side = 1;
-		}
-		if (data->map.map_arr[data->ray.map_y][data->ray.map_x] != '0')
-			hit = 1;
-		if (*side == 0)
-			data->ray.perp_dist = (data->ray.map_x - data->player.pos_x
-					+ (1 - data->ray.side_n_x) / 2.0) / data->ray.ray_dir_x;
-		else
-			data->ray.perp_dist = (data->ray.map_y - data->player.pos_y
-					+ (1 - data->ray.side_n_y) / 2.0) / data->ray.ray_dir_y;
-	}
+    hit = 0;
+    while (hit == 0)
+    {
+        if (data->ray.side_dist_x < data->ray.side_dist_y)
+        {
+            data->ray.side_dist_x += data->ray.delta_x;
+            data->ray.map_x += data->ray.side_n_x;
+            *side = 0;
+        }
+        else
+        {
+            data->ray.side_dist_y += data->ray.delta_y;
+            data->ray.map_y += data->ray.side_n_y;
+            *side = 1;
+        }
+        tile = data->map.map_arr[data->ray.map_y][data->ray.map_x];
+        if (tile == '1' || tile == ' ')
+            hit = 1;
+    }
+    if (*side == 0)
+        data->ray.perp_dist = (data->ray.map_x - data->player.pos_x
+                + (1 - data->ray.side_n_x) / 2.0) / data->ray.ray_dir_x;
+    else
+        data->ray.perp_dist = (data->ray.map_y - data->player.pos_y
+                + (1 - data->ray.side_n_y) / 2.0) / data->ray.ray_dir_y;
 }
 
 void	ray_tex_init(t_data *data)
@@ -101,16 +111,16 @@ void	ray_tex_sides(t_data *data, int side)
 	if (!side)
 	{
 		if (data->ray.ray_dir_x > 0)
-			data->ray.side = NORTH;
+			data->ray.side = EAST;
 		else
-			data->ray.side = SOUTH;
+			data->ray.side = WEST;
 	}
 	else
 	{
 		if (data->ray.ray_dir_y > 0)
-			data->ray.side = EAST;
+			data->ray.side = SOUTH;
 		else
-			data->ray.side = WEST;
+			data->ray.side = NORTH;
 	}
 	data->ray.tex_num = (int)(data->ray.wall_x * (double)(data->tex[data->ray.side].img_width));
 	if ((!side && data->ray.ray_dir_x > 0)

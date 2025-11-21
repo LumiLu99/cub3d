@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/17 00:45:34 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/21 14:24:49 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,27 @@
 
 static void	init_data(t_data *data)
 {
-	int i = 0;
 	ft_bzero(data, sizeof(t_data));
-	data->map.map_arr[0] = "1111111111111111111111111111111111111111111";
-	data->map.map_arr[1] = "1110000000001111100000000000111111111111111";
-	data->map.map_arr[2] = "1110000000000111110000000000001111111111111";
-	data->map.map_arr[3] = "1110001111110011111111111100000111111111111";
-	data->map.map_arr[4] = "1110001111100111110000111111111111111111111";
-	data->map.map_arr[5] = "1110001111100111111000011111111111111111111";
-	data->map.map_arr[6] = "1110001111100111111000011111111111111111111";
-	data->map.map_arr[7] = "1110001111100111111000011111111111111111111";
-	data->map.map_arr[8] = "1110001111100111111000011111111111111111111";
-	data->map.map_arr[9] = "1110001111111111001111111110000111111111111";
-	data->map.map_arr[10] = "1110000000000000000000111111100001111111111";
-	data->map.map_arr[11] = "1110000000000000000000000000000001111111111";
-	data->map.map_arr[12] = "1110000000000000000000111111100001111111111";
-	data->map.map_arr[13] = "1111111111111111001111111110000000000001111";
-	data->map.map_arr[14] = "1111111111000000000000111111111111111111111";
-	data->map.map_arr[15] = "1111111111111111111111111111111111111111111";
-	while (i < TEX_SIZE)
-	{
-		data->tex[i].tex_path = strdup("textures/greystone.xpm");
-		i++;
-	}
+	data->map.map_arr[0] = "        1111111111111111111111111";
+	data->map.map_arr[1] = "        1000000000110000000000001";
+	data->map.map_arr[2] = "        1011000001110000000000001";
+	data->map.map_arr[3] = "        1001000000000000000000001";
+	data->map.map_arr[4] = "111111111011000001110000000000001";
+	data->map.map_arr[5] = "100000000011000001110111111111111";
+	data->map.map_arr[6] = "11110111111111011100000010001";
+	data->map.map_arr[7] = "11110111111111011101010010001";
+	data->map.map_arr[8] = "11000000110101011100000010001";
+	data->map.map_arr[9] = "10000000000000000000000010001";
+	data->map.map_arr[10] = "10000000000000001101010000001";
+	data->map.map_arr[11] = "1100000111010101111101111000111";
+	data->map.map_arr[12] = "11110111 1110101 101111010001";
+	data->map.map_arr[13] = "11111111 1111111 111111111111";
+	data->map.map_arr[14] = "11111111111111111111111111111";
+	data->map.map_arr[15] = NULL;
+	data->tex[NORTH].tex_path = ft_strdup("textures/north.xpm");
+	data->tex[EAST].tex_path = ft_strdup("textures/east.xpm");
+	data->tex[SOUTH].tex_path = ft_strdup("textures/south.xpm");
+	data->tex[WEST].tex_path = ft_strdup("textures/west.xpm");
 	init_mlx(data);
 	init_player(&data->player);
 	tex_init(data);
@@ -61,12 +59,12 @@ void	init_mlx(t_data *data)
 
 void	init_player(t_player *player)
 {
-	player->pos_x = 5.5;
-	player->pos_y = 11.5;
+	player->pos_x = 5.0;
+	player->pos_y = 11.0;
 	player->dir_x = -1.0;
 	player->dir_y = 0.0;
 	player->plane_x = 0.0;
-	player->plane_y = 0.66;
+	player->plane_y = -0.66;
 
 	player->key_up = false;
 	player->key_down = false;
@@ -116,6 +114,7 @@ static void	print_player_pixel(t_data *data)
 	}
 }
 
+
 static void	print_minimap(t_data *data)
 {
 	int i = 0;
@@ -145,7 +144,11 @@ static void	print_minimap(t_data *data)
 					mx++;
 				}
 			}
-			else
+			else if (data->map.map_arr[i][j] == '0' ||
+             data->map.map_arr[i][j] == 'N' ||
+             data->map.map_arr[i][j] == 'S' ||
+             data->map.map_arr[i][j] == 'E' ||
+             data->map.map_arr[i][j] == 'W')
 			{
 				mx = 0;
 				while (mx < TILE_SIZE)
@@ -165,6 +168,8 @@ static void	print_minimap(t_data *data)
 	}
 }
 
+
+
 void draw_line(t_data *data, double x1, double y1, double x2, double y2)
 {
     double delta_x = x2 - x1;
@@ -180,7 +185,7 @@ void draw_line(t_data *data, double x1, double y1, double x2, double y2)
 
     while (i <= step)
     {
-        my_mlx_pixel_put(data, x, y, GREEN_PIXEL);
+        my_mlx_pixel_put(data, x, y, RED_PIXEL);
         x += dx;
         y += dy;
         i++;

@@ -6,11 +6,14 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 16:54:41 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/31 16:58:56 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/21 14:23:44 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
+
+// THIS C FILE IS ONLY FOR TESTING PURPOSES, RAYMARCHING
+// OLD IMPLEMENTATION IN CASE LODEV DOES NOT WORK, IGNORE
 
 // bool	touch(float px, float py, t_data *data)
 // {
