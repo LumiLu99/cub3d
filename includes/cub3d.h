@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/21 14:25:22 by yelu             ###   ########.fr       */
+/*   Updated: 2025/11/29 22:33:20 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdbool.h>
 # include <math.h>
 # include <sys/time.h>
+# include <fcntl.h>
 
 // Colours
 # define RED_PIXEL 0xFF0000
@@ -53,6 +54,9 @@ typedef struct s_map
 	char	*map_arr[16];
 	int		x_len_map;
 	int		y_len_map;
+	char	**array;
+	int		sum_rows;
+	int		column;
 
 }	t_map;
 
