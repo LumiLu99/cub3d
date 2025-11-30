@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/30 20:40:26 by wshee            ###   ########.fr       */
+/*   Updated: 2025/11/30 22:08:37 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <stdbool.h>
 # include <math.h>
 # include <sys/time.h>
+# include <stdio.h>
 # include <fcntl.h>
 
 // Colours
@@ -168,5 +169,11 @@ void		print_error_exit(char *str);
 void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 long long	get_time_in_ms(void);
 void		print_fps(t_data *data);
+
+// parsing
+bool check_file_ext(const char *filename, const char *ext);
+int open_file(const char *filename);
+int parse_texture(char *map_file);
+bool check_character(char c);
 
 #endif

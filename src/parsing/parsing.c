@@ -6,14 +6,13 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/11/30 21:30:35 by wshee            ###   ########.fr       */
+/*   Updated: 2025/11/30 22:30:09 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/cub3d.h"
-# include <stdio.h>
 
-bool check_file_ext(const char *filename);
+bool check_file_ext(const char *filename, const char *ext);
 bool check_character(char c);
 int open_file(const char *filename);
 void print_2d_map(char **array);
@@ -23,20 +22,21 @@ void store_2d_array(t_map *map, const char *filename);
 bool read_map(t_map *map, int fd);
 int parse_map(const char *filename, t_map *map);
 
-bool check_file_ext(const char *filename)
+bool check_file_ext(const char *filename, const char *ext)
 {
-	const char *ext = ".cub";
 	size_t filename_len = ft_strlen(filename);
 	size_t ext_len = ft_strlen(ext);
 
 	if (filename[0] == '\0')
 		return false;
-	if (filename_len == ext_len)
+	if (filename_len <= ext_len)
 		return false;
 	while (filename[filename_len - 1] && ext_len > 0)
 	{
+		// printf("filename[%c], ext[%c]\n", filename[filename_len - 1], ext[ext_len - 1]);
 		if (filename[filename_len - 1] != ext[ext_len - 1])
 			return false;
+		// printf("filename_len: %zu, ext: %zu\n", filename_len, ext_len);
 		filename_len--;
 		ext_len--;
 	}
@@ -45,7 +45,7 @@ bool check_file_ext(const char *filename)
 
 bool check_character(char c)
 {
-	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W' && c != 'E' && c != ' ' && c != '\n')
+	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W' && c != 'E' && c != ' ')
 		return false;
 	return true;
 }
@@ -82,16 +82,14 @@ void store_2d_array(t_map *map, const char *filename)
 	map->array[row++][map->column + 2] = '\0';
 	while (row < map->sum_rows + 1)
 	{
+		ft_memset(map->array[row], ' ', map->column + 2);
 		int i = 0;
-		int col = 0;
-		map->array[row][col++] = ' ';
+		int col = 1;
 		while (line[i] != '\n')
 		{
 			map->array[row][col++] = line[i++];
 		}
-		while (col < map->column + 2)
-			map->array[row][col++] = ' ';
-		map->array[row][col] = '\0';
+		map->array[row][map->column + 2] = '\0';
 		free(line);
 		line = get_next_line(fd);
 		row++;
@@ -140,7 +138,9 @@ bool read_map(t_map *map, int fd)
 			return false;
 		}
 		int i = 0;
-		while (line[i])
+		// exclude '\n'
+		int len = ft_strlen(line) - 1;
+		while (i < len - 1)
 		{
 			if (!check_character(line[i]))
 			{
@@ -149,7 +149,6 @@ bool read_map(t_map *map, int fd)
 			}
 			i++;
 		}
-		int len = ft_strlen(line) - 1;
 		if (column < len)
 			column = len;
 		rows++;
@@ -236,7 +235,7 @@ bool validate_map(t_map *map)
 int parse_map(const char *filename, t_map *map)
 {
 
-	if (!check_file_ext(filename))
+	if (!check_file_ext(filename, ".cub"))
 	{
 		printf("Invalid map: map file extension must be \".ext\"\n");
 		return 1;
@@ -270,6 +269,9 @@ int	main(int ac, char **av)
 		printf("Number of arguments must be 2\n");
 		return 1;
 	}
+	// TODO: how to separate and differentiate textures and map? think think... ft_split '\n'
+	if (parse_texture(av[1]))
+		return 1;
 	if (parse_map(av[1], &map))
 		return 1;
 	return 0;
