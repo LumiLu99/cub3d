@@ -6,12 +6,22 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/11/29 22:59:36 by wshee            ###   ########.fr       */
+/*   Updated: 2025/11/30 21:30:35 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/cub3d.h"
 # include <stdio.h>
+
+bool check_file_ext(const char *filename);
+bool check_character(char c);
+int open_file(const char *filename);
+void print_2d_map(char **array);
+void allocate_map_array(t_map *map);
+bool validate_player(t_map *map);
+void store_2d_array(t_map *map, const char *filename);
+bool read_map(t_map *map, int fd);
+int parse_map(const char *filename, t_map *map);
 
 bool check_file_ext(const char *filename)
 {
@@ -33,30 +43,6 @@ bool check_file_ext(const char *filename)
 	return true;
 }
 
-// bool validate_walls(char *line, int check_walls)
-// {
-// 	int	i;
-// 	int len;
-
-// 	check_walls = 0;
-// 	// exclude the '\n'
-// 	len = ft_strlen(line) - 2;
-// 	while (i < len)
-// 	{
-// 		if (check_walls = 1)
-// 		{
-// 			if (line[i] != '1' && line[i] != ' ')
-// 				return false;
-// 		}
-// 		else
-// 		{
-// 			if (line[i] == '1' && line [i + 1] != 0)
-// 				return false;
-// 		}
-// 		i++;
-// 	}
-// }
-
 bool check_character(char c)
 {
 	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W' && c != 'E' && c != ' ' && c != '\n')
@@ -66,21 +52,71 @@ bool check_character(char c)
 
 void allocate_map_array(t_map *map)
 {
-	char **array = (char **)malloc(sizeof(char*) * map->sum_rows);
-	if(!array)
+	map->array = (char **)malloc(sizeof(char*) * (map->sum_rows + 3));
+	if(!map->array)
 	{
 		ft_putstr_fd("Failed to malloc\n", 2);
+		return ;
 	}
 	int i = 0;
-	while(i < map->sum_rows)
+	while (i < map->sum_rows + 3)
 	{
-		array[i] = (char *)malloc(sizeof(char) * map->column);
+		// 2 for space and 1 for '\0'
+		map->array[i] = (char *)malloc(sizeof(char) * (map->column + 3));
+		if(!map->array[i])
+		{
+			ft_putstr_fd("Failed to malloc\n", 2);
+			return ;
+		}
 		i++;
 	}
 }
 
+void store_2d_array(t_map *map, const char *filename)
+{
+	int fd = open_file(filename);
+	char *line = get_next_line(fd);
+	int row = 0;
+	// Set the top border
+	ft_memset(map->array[row], ' ', map->column + 2);
+	map->array[row++][map->column + 2] = '\0';
+	while (row < map->sum_rows + 1)
+	{
+		int i = 0;
+		int col = 0;
+		map->array[row][col++] = ' ';
+		while (line[i] != '\n')
+		{
+			map->array[row][col++] = line[i++];
+		}
+		while (col < map->column + 2)
+			map->array[row][col++] = ' ';
+		map->array[row][col] = '\0';
+		free(line);
+		line = get_next_line(fd);
+		row++;
+	}
+	close(fd);
+	// Set the bottom border
+	ft_memset(map->array[row], ' ', map->column + 2);
+	map->array[row++][map->column + 2] = '\0';
+	map->array[row] = NULL;
+	print_2d_map(map->array);
+}
+
+void print_2d_map(char **array)
+{
+	for (int i = 0; array[i] != NULL; i++)
+	{
+		printf("array[%d]: [", i);
+		for (int j = 0; array[i][j] != '\0'; j++)
+			printf("%c", array[i][j]);
+		printf("]\n");
+	}
+}
+
 // calculate the row of map
-void read_map(t_map *map, int fd)
+bool read_map(t_map *map, int fd)
 {
 	int	rows;
 	int	check_walls;
@@ -94,62 +130,135 @@ void read_map(t_map *map, int fd)
 	if (!line)
 	{
 		printf("Error: Empty map! \n");
-		return ;
+		return false;
 	}
 	while (line)
 	{
 		if (line[0] == '\n')
 		{
 			printf("Empty lines in the map\n");
-			return ;
+			return false;
 		}
 		int i = 0;
 		while (line[i])
 		{
 			if (!check_character(line[i]))
 			{
-				printf("Invalid character\n");
-				return ;
+				printf("Invalid character: [%c] at row %d column %d\n", line[i], rows, i);
+				return false;
 			}
 			i++;
 		}
 		int len = ft_strlen(line) - 1;
 		if (column < len)
 			column = len;
-		// if (rows == 0)
-		// 	check_walls = 1;
-		// if(!validate_walls(line, check_walls))
-		// {
-		// 	printf("Invalid map\n");
-		// 	return ;
-		// }
 		rows++;
 		free(line);
 		line = get_next_line(fd);
 	}
+	close(fd);
 	map->sum_rows = rows;
 	map->column = column;
 	printf("row: %d, column: %d\n", map->sum_rows, map->column);
+	return true;
 }
 
-int parse_map(const char *filename, t_map *map)
+int open_file(const char *filename)
 {
 	int	fd;
 
-	if (!check_file_ext(filename))
-	{
-		printf("Invalid map\n");
-		return 1;
-	}
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 	{
 		printf("Failed to open file\n");
+		return (-1);
+	}
+	return fd;
+}
+
+bool validate_player(t_map *map)
+{
+	int i = 0;
+	int player = 0;
+	while (map->array[i])
+	{
+		int j = 0;
+		while (map->array[i][j] != '\0')
+		{
+			if (map->array[i][j] == 'N' || map->array[i][j] == 'S' || map->array[i][j] == 'E' || map->array[i][j] == 'W')
+			{
+				map->x_pos = j;
+				map->y_pos = i;
+				player++;
+			}
+			j++;
+		}
+		i++;
+	}
+	printf("player: %d pos >> x: %d, y: %d\n", player, map->x_pos, map->y_pos);
+	if (player == 1)
+		return true;
+	return false;
+}
+
+bool check_walls(char c)
+{
+	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W' && c != 'E')
+		return false;
+	return true;
+}
+
+// when see 0 or player check four direction is fill with walls
+bool validate_map(t_map *map)
+{
+	int i = 0;
+	while (map->array[i])
+	{
+		int j = 0;
+		while (map->array[i][j] != '\0')
+		{
+			if (map->array[i][j] == '0' || (j == map->x_pos && i == map->y_pos))
+			{
+				// printf("check no walls >> [%c] x: %d, y: %d\n", map->array[i][j], j, i);
+				if (!check_walls(map->array[i - 1][j]) || !check_walls(map->array[i + 1][j]) || !check_walls(map->array[i][j - 1]) || !check_walls(map->array[i][j + 1]))
+				{
+					// printf("no walls >> x: %d, y: %d\n", j, i);
+					return false;
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+	return true;
+}
+
+int parse_map(const char *filename, t_map *map)
+{
+
+	if (!check_file_ext(filename))
+	{
+		printf("Invalid map: map file extension must be \".ext\"\n");
 		return 1;
 	}
+	int fd = open_file(filename);
 	ft_bzero(map, sizeof(t_map));
-	read_map(map, fd);
+	if(!read_map(map, fd))
+	{
+		return 1;
+	}
 	allocate_map_array(map);
+	store_2d_array(map, filename);
+	if (!validate_player(map))
+	{
+		ft_putstr_fd("Map should consists of one player only", 2);
+		return 1;
+	}
+	if (!validate_map(map))
+	{
+		ft_putstr_fd("Invalid map: Map not close with walls", 2);
+		return 1;
+	}
 	return 0;
 }
 

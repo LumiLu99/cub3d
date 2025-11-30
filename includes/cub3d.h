@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/29 22:33:20 by wshee            ###   ########.fr       */
+/*   Updated: 2025/11/30 20:40:26 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ typedef struct s_map
 	char	**array;
 	int		sum_rows;
 	int		column;
-
+	int		x_pos;
+	int		y_pos;
 }	t_map;
 
 typedef struct s_minimap
