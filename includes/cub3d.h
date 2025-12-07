@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/30 22:08:37 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/07 21:14:47 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void		print_fps(t_data *data);
 // parsing
 bool check_file_ext(const char *filename, const char *ext);
 int open_file(const char *filename);
-int parse_texture(char *map_file);
+int parse_cub(char *filename, t_img *tex);
 bool check_character(char c);
 
 #endif

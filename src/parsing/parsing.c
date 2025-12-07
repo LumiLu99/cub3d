@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/11/30 22:30:09 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/07 21:17:00 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,12 +234,6 @@ bool validate_map(t_map *map)
 
 int parse_map(const char *filename, t_map *map)
 {
-
-	if (!check_file_ext(filename, ".cub"))
-	{
-		printf("Invalid map: map file extension must be \".ext\"\n");
-		return 1;
-	}
 	int fd = open_file(filename);
 	ft_bzero(map, sizeof(t_map));
 	if(!read_map(map, fd))
@@ -264,16 +258,18 @@ int parse_map(const char *filename, t_map *map)
 int	main(int ac, char **av)
 {
 	t_map map;
+	t_img tex[4];
+
 	if (ac != 2)
 	{
 		printf("Number of arguments must be 2\n");
 		return 1;
 	}
 	// TODO: how to separate and differentiate textures and map? think think... ft_split '\n'
-	if (parse_texture(av[1]))
+	if (parse_cub(av[1], tex))
 		return 1;
-	if (parse_map(av[1], &map))
-		return 1;
+	// if (parse_map(av[1], &map))
+	// 	return 1;
 	return 0;
 }
 
@@ -289,6 +285,13 @@ int	main(int ac, char **av)
 // - check file extension of texture file, end with .xpm
 // - check the colour must between 0-255 for each RGB
 // - convert to hexa format
+// - map must be last, others can be any order
 // 4. check player up, down, left, right
 // - is 1 or 0
 // - make a 2d array, fill up the corner with space
+
+// Edge cases!
+// check get next line make sure read until the end
+// will have meory leaks if didnt read the end
+// check tabs for texture after split
+// what if the texture is not 6 (missing)
