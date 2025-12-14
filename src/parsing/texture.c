@@ -6,11 +6,34 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 21:42:28 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/07 22:04:31 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/14 22:59:09 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/cub3d.h"
+
+int	convert_rgb_to_int(const char *str)
+{
+	int	i;
+	int	sum;
+
+	i = 0;
+	sum = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] >= 48 && str[i] <= 57)
+		{
+			sum = (sum * 10) + (str[i] - 48);
+			i++;
+		}
+		else
+		{ 
+			return -1;
+		}
+	}
+	return (sum);
+}
 
 bool error_message(char *message)
 {
@@ -19,19 +42,23 @@ bool error_message(char *message)
 	return false;
 }
 
-int parse_calour(char *identifier, char *color, t_img *tex)
+int parse_color(char *identifier, char *color, t_img *tex)
 {
 	char **rgb = ft_split(color, ',');
 	int counter = 0;
 	while (rgb[counter])
 		counter++;
+	// printf("counter: %d\n", counter);
 	if (counter != 3)
-		return (error_message("Invalid RGB color"));
-	int r = ft_atoi(rgb[0]);
-	int g = ft_atoi(rgb[1]);
-	int b = ft_atoi(rgb[2]);
-	// convert into hex
-	return 0;
+		return (-1);
+	// TODO: Modify atoi to check for alphabet
+	int r = convert_rgb_to_int(rgb[0]);
+	int g = convert_rgb_to_int(rgb[1]);
+	int b = convert_rgb_to_int(rgb[2]);
+	// convert into hexa format 0xFFFFFF in integer form
+	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+		return (-1);
+	return (r << 16 | g << 8 | b);
 }
 
 int parse_texture(char *line, t_img *tex)
@@ -46,7 +73,7 @@ int parse_texture(char *line, t_img *tex)
 	while (texture[counter])
 		counter++;
 	if (counter != 2)
-		return 1;
+		return (error_message("Invalid element format"));
 	char *identifier = texture[0];
 	printf("identifier: %s\n", identifier);
 	if (ft_strlen(identifier) > 2)
@@ -70,10 +97,13 @@ int parse_texture(char *line, t_img *tex)
 	// TODO: different for floor and ceiling, check until texture only
 	if (ft_strlen(identifier) == 1 && (line[0] == 'F' || line[0] == 'C'))
 	{
-		if (parse_color(identifier, texture_path, tex))
-			return 1;
+		int color = parse_color(identifier, texture_path, tex); 
+		if (color == -1)
+			return (error_message("Invalid RGB color"));
+		printf("color: %d\n", color);
 	}
-	// free everything, write function free 2d array
+	// TODO: make sure every elements exist
+	// TODO: free everything, write function free 2d array
 	return 0;
 }
 
@@ -88,13 +118,14 @@ int parse_cub(char *filename, t_img *tex)
 	char *line = get_next_line(fd);
 	while (line)
 	{
+		// TODO: after texture parse the map, try to think to continue with the map
 		if (line[0] == ' ' || line[0] == '1' || line[0] == '0')
 			break ;
 		printf("line: %s\n", line);
 		if (line[0] != '\n')
 		{
 			if (line[0] == 'N' || line[0] == 'W' || line[0] == 'S' || line[0] == 'E' || line[0] == 'F' || line[0] == 'C')
-				if (parse_texture(line, tex))
+				if (!parse_texture(line, tex))
 					return 1;
 		}
 		free(line);
