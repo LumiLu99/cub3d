@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/07 21:14:47 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/21 00:16:27 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,12 @@
 # define SOUTH 2
 # define WEST 3
 
+enum parse_state {
+	ELEMENTS,
+	MAP,
+	INVALID
+}	t_parse_state;
+
 typedef struct s_map
 {
 	char	*map_arr[16];
@@ -60,13 +66,15 @@ typedef struct s_map
 	int		column;
 	int		x_pos;
 	int		y_pos;
-}	t_map;
+	int		floor;
+	int		ceiling;
+}	t_map;	
 
 typedef struct s_minimap
 {
 	int	mp_x;
 	int	mp_y;
-}	t_minimap;
+}	t_minimap;	
 
 typedef struct s_player
 {
@@ -83,7 +91,7 @@ typedef struct s_player
 	bool	key_left;
 	bool	left_rotate;
 	bool	right_rotate;
-}	t_player;
+}	t_player;	
 
 typedef struct s_time
 {
@@ -93,7 +101,7 @@ typedef struct s_time
 	int			fps;
 	int			fps_count;
 	long long	start_time;
-}	t_time;
+}	t_time;	
 
 typedef struct s_ray
 {
@@ -115,7 +123,7 @@ typedef struct s_ray
 	int		draw_end;
 	int		tex_num;
 	double	wall_x;
-}	t_ray;
+}	t_ray;	
 
 typedef struct s_img
 {
@@ -127,7 +135,7 @@ typedef struct s_img
 	int		img_height;
 	int		img_width;
 	char	*tex_path;
-}	t_img;
+}	t_img;	
 
 typedef struct s_data
 {
@@ -141,7 +149,6 @@ typedef struct s_data
 	t_time		time;
 	t_ray		ray;
 }	t_data;
-
 
 int	ft_close(t_data *data);
 int	update(void *param);
@@ -173,7 +180,7 @@ void		print_fps(t_data *data);
 // parsing
 bool check_file_ext(const char *filename, const char *ext);
 int open_file(const char *filename);
-int parse_cub(char *filename, t_img *tex);
+int parse_file(char *filename, t_data *data);
 bool check_character(char c);
 
 #endif

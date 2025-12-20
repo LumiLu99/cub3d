@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 21:42:28 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/14 22:59:09 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/21 00:15:31 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool error_message(char *message)
 	return false;
 }
 
-int parse_color(char *identifier, char *color, t_img *tex)
+int parse_color(char *identifier, char *color)
 {
 	char **rgb = ft_split(color, ',');
 	int counter = 0;
@@ -61,7 +61,7 @@ int parse_color(char *identifier, char *color, t_img *tex)
 	return (r << 16 | g << 8 | b);
 }
 
-int parse_texture(char *line, t_img *tex)
+int parse_texture(char *line, t_data *data)
 {
 	const char *texture_identifier[4] = {"NO", "EA", "SO", "WE"};
 	char **texture = ft_split(line, ' ');
@@ -87,49 +87,99 @@ int parse_texture(char *line, t_img *tex)
 	{
 		if (ft_strncmp(identifier, texture_identifier[i], ft_strlen(identifier)) == 0)
 		{
-			tex[i].tex_path = ft_strdup(texture_path);
+			data->tex[i].tex_path = ft_strdup(texture_path);
 			// printf("%s\n", tex[i].tex_path);
 			if (!check_file_ext(texture_path, ".xpm"))
 				return (error_message("Invalid texture file: must be end with .xpm"));
 		}
 		i++;
 	}
-	// TODO: different for floor and ceiling, check until texture only
 	if (ft_strlen(identifier) == 1 && (line[0] == 'F' || line[0] == 'C'))
 	{
-		int color = parse_color(identifier, texture_path, tex); 
+		int color = parse_color(identifier, texture_path); 
 		if (color == -1)
-			return (error_message("Invalid RGB color"));
+		return (error_message("Invalid RGB color"));
 		printf("color: %d\n", color);
+		if (line[0] == 'F')
+			data->map.floor = color;
+		else
+			data->map.ceiling = color;
 	}
 	// TODO: make sure every elements exist
 	// TODO: free everything, write function free 2d array
 	return 0;
 }
 
-int parse_cub(char *filename, t_img *tex)
+bool check_all_element_exists(t_data *data)
 {
+	int i = 0;
+	while (i < 4)
+	{
+		if (data->tex[i].tex_path == NULL)
+			return(error_message("Texture elements given incomplete"));
+	}
+	if (data->map.floor == -1 || data->map.ceiling == -1)
+		return(error_message("Floor and ceiling elements given incomplete"));
+}
+
+int identify_parse_state(char *line)
+{
+	if (line[0] == 'N' || line[0] == 'W' || line[0] == 'S' || line[0] == 'E' || line[0] == 'F' || line[0] == 'C')
+		return ELEMENTS;
+	else if (line[0] == ' ' || line[0] == '1' || line[0] == '0')
+		return MAP;
+	else
+		return INVALID;
+}
+
+// TODO: divide into 2 different state (elements and state)
+int parse_file(char *filename, t_data *data)
+{
+	t_parse_state	state;
+	int result;
+	
+	state = ELEMENTS;
+	result = 0;
 	if (!check_file_ext(filename, ".cub"))
 	{
-		printf("Invalid map: map file extension must be \".ext\"\n");
+		printf("Invalid map: map file extension must be \".cub\"\n");
 		return 1;
 	}
 	int fd = open_file(filename);
+	if (fd == -1)
+		return (error_message("Invalid fd: Failed to open file"));
 	char *line = get_next_line(fd);
+	// TODO: after texture parse the map, try to think to continue with the map
 	while (line)
 	{
-		// TODO: after texture parse the map, try to think to continue with the map
-		if (line[0] == ' ' || line[0] == '1' || line[0] == '0')
-			break ;
-		printf("line: %s\n", line);
-		if (line[0] != '\n')
+		// if empty line - skip
+		if (line[0] == '\n')
 		{
-			if (line[0] == 'N' || line[0] == 'W' || line[0] == 'S' || line[0] == 'E' || line[0] == 'F' || line[0] == 'C')
-				if (!parse_texture(line, tex))
-					return 1;
+			continue;	
 		}
+		// result = -1;
+		printf("line: %s\n", line);
+		t_parse_state type = identify_parse_state(line);
+		//check all the elements first
+		if (state == ELEMENTS)
+			// if got type is map return error
+			if (!parse_texture(line, data))
+				result = -1;
+		// when check is map element (first line)
+		// validate all the element had been complete
+		// change the state to map
+		// parse map
+		if (line[0] == ' ' || line[0] == '1' || line[0] == '0')
+			parse_map();
 		free(line);
 		line = get_next_line(fd);
 	}
+	// at the end validate the last part is map
+	// check if element return no map found
+	close(fd);
+	if (result == -1)
+		return 1;
+	if (!check_all_element_exists(data))
+		return 1;
 	return 0;
 }

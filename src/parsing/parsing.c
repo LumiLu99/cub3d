@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/07 21:17:00 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/20 22:30:27 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,10 +255,18 @@ int parse_map(const char *filename, t_map *map)
 	return 0;
 }
 
+void init_data(t_data *data)
+{
+	ft_bzero(data, sizeof(t_data));
+	data->map.floor = -1;
+	data->map.ceiling = -1;
+}
+
 int	main(int ac, char **av)
 {
-	t_map map;
-	t_img tex[4];
+	// t_map map;
+	// t_img tex[4];
+	t_data data;
 
 	if (ac != 2)
 	{
@@ -266,7 +274,8 @@ int	main(int ac, char **av)
 		return 1;
 	}
 	// TODO: how to separate and differentiate textures and map? think think... ft_split '\n'
-	if (parse_cub(av[1], tex))
+	init_data(&data);
+	if (parse_file(av[1], &data))
 		return 1;
 	// if (parse_map(av[1], &map))
 	// 	return 1;
