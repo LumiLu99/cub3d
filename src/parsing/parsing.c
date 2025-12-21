@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/20 22:30:27 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/21 19:24:04 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,12 @@
 
 bool check_file_ext(const char *filename, const char *ext);
 bool check_character(char c);
-int open_file(const char *filename);
 void print_2d_map(char **array);
 void allocate_map_array(t_map *map);
 bool validate_player(t_map *map);
 void store_2d_array(t_map *map, const char *filename);
-bool read_map(t_map *map, int fd);
-int parse_map(const char *filename, t_map *map);
+bool read_map(t_map *map, char *line);
+int parse_map(const char *filename, t_data *data);
 
 bool check_file_ext(const char *filename, const char *ext)
 {
@@ -50,8 +49,13 @@ bool check_character(char c)
 	return true;
 }
 
+// add outder border around the map
+// total rows = sum_rows + top + bottom + NULL
+// when allocate for column +2, as i = 0,
+// for each row, 2 for space and 1 for '\0'
 void allocate_map_array(t_map *map)
 {
+	printf("rows: %d, column: %d\n", map->sum_rows, map->column);
 	map->array = (char **)malloc(sizeof(char*) * (map->sum_rows + 3));
 	if(!map->array)
 	{
@@ -59,46 +63,52 @@ void allocate_map_array(t_map *map)
 		return ;
 	}
 	int i = 0;
-	while (i < map->sum_rows + 3)
+	while (i < map->sum_rows + 2)
 	{
-		// 2 for space and 1 for '\0'
 		map->array[i] = (char *)malloc(sizeof(char) * (map->column + 3));
 		if(!map->array[i])
 		{
 			ft_putstr_fd("Failed to malloc\n", 2);
 			return ;
 		}
+		ft_memset(map->array[i], ' ', map->column + 2);
+		map->array[i][map->column + 2] = '\0';
 		i++;
 	}
+	map->array[i] = NULL;
+	// print_2d_map(map->array);
 }
 
 void store_2d_array(t_map *map, const char *filename)
 {
-	int fd = open_file(filename);
-	char *line = get_next_line(fd);
-	int row = 0;
-	// Set the top border
-	ft_memset(map->array[row], ' ', map->column + 2);
-	map->array[row++][map->column + 2] = '\0';
-	while (row < map->sum_rows + 1)
+	int fd = open(filename, O_RDONLY);
+	if (fd == -1)
 	{
-		ft_memset(map->array[row], ' ', map->column + 2);
+		printf("Invalid fd: Failed to open file\n");
+		return ;
+	}
+	char *line = get_next_line(fd);
+	int row = 1;
+	while (line)
+	{
+		t_parse_state type = identify_parse_state(line);
+		if (line[0] == '\n' || type == ELEMENTS)
+		{
+			free(line);
+			line = get_next_line(fd);
+			continue ;
+		}
 		int i = 0;
 		int col = 1;
 		while (line[i] != '\n')
 		{
 			map->array[row][col++] = line[i++];
 		}
-		map->array[row][map->column + 2] = '\0';
 		free(line);
 		line = get_next_line(fd);
 		row++;
 	}
 	close(fd);
-	// Set the bottom border
-	ft_memset(map->array[row], ' ', map->column + 2);
-	map->array[row++][map->column + 2] = '\0';
-	map->array[row] = NULL;
 	print_2d_map(map->array);
 }
 
@@ -114,65 +124,28 @@ void print_2d_map(char **array)
 }
 
 // calculate the row of map
-bool read_map(t_map *map, int fd)
+bool read_map(t_map *map, char *line)
 {
-	int	rows;
-	int	check_walls;
-	int	column;
-	char	*line;
-
-	rows = 0;
-	check_walls = 0;
-	column = 0;
-	line = get_next_line(fd);
-	if (!line)
+	if (line[0] == '\n')
 	{
-		printf("Error: Empty map! \n");
-		return false;
+		return (error_message("Empty lines in the map"));
 	}
-	while (line)
+	// exclude '\n'
+	int len = ft_strlen(line) - 1;
+	int i = 0;
+	while (i < len - 1)
 	{
-		if (line[0] == '\n')
+		if (!check_character(line[i]))
 		{
-			printf("Empty lines in the map\n");
+			printf("Invalid character in map: [%c] at row %d column %d\n", line[i], map->sum_rows, i);
 			return false;
 		}
-		int i = 0;
-		// exclude '\n'
-		int len = ft_strlen(line) - 1;
-		while (i < len - 1)
-		{
-			if (!check_character(line[i]))
-			{
-				printf("Invalid character: [%c] at row %d column %d\n", line[i], rows, i);
-				return false;
-			}
-			i++;
-		}
-		if (column < len)
-			column = len;
-		rows++;
-		free(line);
-		line = get_next_line(fd);
+		i++;
 	}
-	close(fd);
-	map->sum_rows = rows;
-	map->column = column;
-	printf("row: %d, column: %d\n", map->sum_rows, map->column);
+	if (map->column < len)
+		map->column = len;
+	map->sum_rows++;
 	return true;
-}
-
-int open_file(const char *filename)
-{
-	int	fd;
-
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-	{
-		printf("Failed to open file\n");
-		return (-1);
-	}
-	return fd;
 }
 
 bool validate_player(t_map *map)
@@ -232,27 +205,19 @@ bool validate_map(t_map *map)
 	return true;
 }
 
-int parse_map(const char *filename, t_map *map)
+int parse_map(const char *filename, t_data *data)
 {
-	int fd = open_file(filename);
-	ft_bzero(map, sizeof(t_map));
-	if(!read_map(map, fd))
+	allocate_map_array(&data->map);
+	store_2d_array(&data->map, filename);
+	if (!validate_player(&data->map))
 	{
-		return 1;
+		return(error_message("Map should consists of one player only"));
 	}
-	allocate_map_array(map);
-	store_2d_array(map, filename);
-	if (!validate_player(map))
+	if (!validate_map(&data->map))
 	{
-		ft_putstr_fd("Map should consists of one player only", 2);
-		return 1;
+		return (error_message("Invalid map: Map not close with walls"));
 	}
-	if (!validate_map(map))
-	{
-		ft_putstr_fd("Invalid map: Map not close with walls", 2);
-		return 1;
-	}
-	return 0;
+	return 1;
 }
 
 void init_data(t_data *data)
@@ -264,21 +229,18 @@ void init_data(t_data *data)
 
 int	main(int ac, char **av)
 {
-	// t_map map;
-	// t_img tex[4];
 	t_data data;
 
 	if (ac != 2)
 	{
-		printf("Number of arguments must be 2\n");
+		ft_putstr_fd("Number of arguments must be 2", 2);
 		return 1;
 	}
-	// TODO: how to separate and differentiate textures and map? think think... ft_split '\n'
 	init_data(&data);
-	if (parse_file(av[1], &data))
+	if (!parse_file(av[1], &data))
 		return 1;
-	// if (parse_map(av[1], &map))
-	// 	return 1;
+	if (!parse_map(av[1], &data))
+		return 1;
 	return 0;
 }
 
