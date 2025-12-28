@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 17:03:31 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 20:55:10 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,29 +209,6 @@ int parse_map(const char *filename, t_data *data)
 	}
 	return 1;
 }
-
-// int	main(int ac, char **av)
-// {
-// 	t_data data;
-
-// 	if (ac != 2)
-// 	{
-// 		ft_putstr_fd("Number of arguments must be 2", 2);
-// 		return 1;
-// 	}
-// 	init_data(&data);
-// 	if (!parse_file(av[1], &data))
-// 	{
-// 		cleanup_data(&data);
-// 		return 1;
-// 	}
-// 	if (!parse_map(av[1], &data))
-// 	{
-// 		cleanup_data(&data);
-// 		return 1;
-// 	}
-// 	return 0;
-// }
 
 // Requirements:
 // 1. map must composed of 0 & 1 & (N/S/E/W)

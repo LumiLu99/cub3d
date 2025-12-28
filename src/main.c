@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/28 16:47:43 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 20:54:53 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,6 @@ static int	init_data(t_data *data, char **argv)
 		cleanup_data(data);
 		return 1;
 	}
-	// data->map.map_arr[0] = "        1111111111111111111111111";
-	// data->map.map_arr[1] = "        1000000000110000000000001";
-	// data->map.map_arr[2] = "        1011000001110000000000001";
-	// data->map.map_arr[3] = "        1001000000000000000000001";
-	// data->map.map_arr[4] = "111111111011000001110000000000001";
-	// data->map.map_arr[5] = "100000000011000001110111111111111";
-	// data->map.map_arr[6] = "11110111111111011100000010001";
-	// data->map.map_arr[7] = "11110111111111011101010010001";
-	// data->map.map_arr[8] = "11000000110101011100000010001";
-	// data->map.map_arr[9] = "10000000000000000000000010001";
-	// data->map.map_arr[10] = "10000000000000001101010000001";
-	// data->map.map_arr[11] = "1100000111010101111101111000111";
-	// data->map.map_arr[12] = "11110111 1110101 101111010001";
-	// data->map.map_arr[13] = "11111111 1111111 111111111111";
-	// data->map.map_arr[14] = "11111111111111111111111111111";
-	// data->map.map_arr[15] = NULL;
-	// data->tex[NORTH].tex_path = ft_strdup("textures/north.xpm");
-	// data->tex[EAST].tex_path = ft_strdup("textures/east.xpm");
-	// data->tex[SOUTH].tex_path = ft_strdup("textures/south.xpm");
-	// data->tex[WEST].tex_path = ft_strdup("textures/west.xpm");
 	init_mlx(data);
 	init_player(&data->player);
 	tex_init(data);
@@ -72,9 +52,6 @@ void	init_mlx(t_data *data)
 
 void	init_player(t_player *player)
 {
-	// Need to map to the player NSEW
-	// player->pos_x = 5.0;
-	// player->pos_y = 11.0;
 	if (player->direction == 'N')
 	{
 		player->dir_x = 0.0;

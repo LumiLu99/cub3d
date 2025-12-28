@@ -6,11 +6,11 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 19:25:06 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 15:11:48 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 20:53:31 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../includes/cub3d.h"
+#include "../../includes/cub3d.h"
 
 static int	convert_rgb_to_int(const char *str)
 {
@@ -22,25 +22,23 @@ static int	convert_rgb_to_int(const char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] >= 48 && str[i] <= 57)
-		{
-			sum = (sum * 10) + (str[i] - 48);
-			i++;
-		}
-		else
-		{
-			return -1;
-		}
+		if (str[i] < 48 || str[i] > 57)
+			return (-1);
+		sum = (sum * 10) + (str[i] - 48);
+		i++;
 	}
 	return (sum);
 }
 
 // ensure that there are 3 elements passed in as color
 // return type: convert into hexa format 0xFFFFFF in integer form
-int parse_color(char *identifier, char *color)
+int	parse_color(char *identifier, char *color)
 {
-	char **rgb;
-	int counter;
+	char	**rgb;
+	int		counter;
+	int		r;
+	int		g;
+	int		b;
 
 	rgb = ft_split(color, ',');
 	counter = 0;
@@ -51,9 +49,9 @@ int parse_color(char *identifier, char *color)
 		free_2d_array(rgb);
 		return (-1);
 	}
-	int r = convert_rgb_to_int(rgb[0]);
-	int g = convert_rgb_to_int(rgb[1]);
-	int b = convert_rgb_to_int(rgb[2]);
+	r = convert_rgb_to_int(rgb[0]);
+	g = convert_rgb_to_int(rgb[1]);
+	b = convert_rgb_to_int(rgb[2]);
 	free_2d_array(rgb);
 	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
 		return (-1);
