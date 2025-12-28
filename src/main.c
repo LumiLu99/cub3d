@@ -3,41 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/21 14:24:49 by yelu             ###   ########.fr       */
+/*   Updated: 2025/12/28 20:54:53 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-static void	init_data(t_data *data)
+static int	init_data(t_data *data, char **argv)
 {
 	ft_bzero(data, sizeof(t_data));
-	data->map.map_arr[0] = "        1111111111111111111111111";
-	data->map.map_arr[1] = "        1000000000110000000000001";
-	data->map.map_arr[2] = "        1011000001110000000000001";
-	data->map.map_arr[3] = "        1001000000000000000000001";
-	data->map.map_arr[4] = "111111111011000001110000000000001";
-	data->map.map_arr[5] = "100000000011000001110111111111111";
-	data->map.map_arr[6] = "11110111111111011100000010001";
-	data->map.map_arr[7] = "11110111111111011101010010001";
-	data->map.map_arr[8] = "11000000110101011100000010001";
-	data->map.map_arr[9] = "10000000000000000000000010001";
-	data->map.map_arr[10] = "10000000000000001101010000001";
-	data->map.map_arr[11] = "1100000111010101111101111000111";
-	data->map.map_arr[12] = "11110111 1110101 101111010001";
-	data->map.map_arr[13] = "11111111 1111111 111111111111";
-	data->map.map_arr[14] = "11111111111111111111111111111";
-	data->map.map_arr[15] = NULL;
-	data->tex[NORTH].tex_path = ft_strdup("textures/north.xpm");
-	data->tex[EAST].tex_path = ft_strdup("textures/east.xpm");
-	data->tex[SOUTH].tex_path = ft_strdup("textures/south.xpm");
-	data->tex[WEST].tex_path = ft_strdup("textures/west.xpm");
+	data->map.floor = -1;
+	data->map.ceiling = -1;
+	if (!parse_file(argv[1], data))
+	{
+		cleanup_data(data);
+		return 1;
+	}
+	if (!parse_map(argv[1], data))
+	{
+		cleanup_data(data);
+		return 1;
+	}
 	init_mlx(data);
 	init_player(&data->player);
 	tex_init(data);
+	return 0;
 }
 
 void	init_mlx(t_data *data)
@@ -51,7 +44,7 @@ void	init_mlx(t_data *data)
 	data->img_mlx.img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
 	if (!data->img_mlx.img)
 		print_error_exit("img_mlx init failed!\n");
-	data->img_mlx.addr = mlx_get_data_addr(data->img_mlx.img, &data->img_mlx.bits_per_pixel, 
+	data->img_mlx.addr = mlx_get_data_addr(data->img_mlx.img, &data->img_mlx.bits_per_pixel,
 			&data->img_mlx.line_len, &data->img_mlx.endian);
 	if (!data->img_mlx.addr)
 		print_error_exit("img addr init failed!\n");
@@ -59,12 +52,34 @@ void	init_mlx(t_data *data)
 
 void	init_player(t_player *player)
 {
-	player->pos_x = 5.0;
-	player->pos_y = 11.0;
-	player->dir_x = -1.0;
-	player->dir_y = 0.0;
-	player->plane_x = 0.0;
-	player->plane_y = -0.66;
+	if (player->direction == 'N')
+	{
+		player->dir_x = 0.0;
+		player->dir_y = -1.0;
+		player->plane_x = 0.66;
+		player->plane_y = 0.0;
+	}
+	else if (player->direction == 'S')
+	{
+		player->dir_x = 0.0;
+		player->dir_y = 1.0;
+		player->plane_x = -0.66;
+		player->plane_y = 0.0;
+	}
+	else if (player->direction == 'E')
+	{
+		player->dir_x = 1.0;
+		player->dir_y = 0.0;
+		player->plane_x = 0.0;
+		player->plane_y = 0.66;
+	}
+	else if (player->direction == 'W')
+	{
+		player->dir_x = -1.0;
+		player->dir_y = 0.0;
+		player->plane_x = 0.0;
+		player->plane_y = -0.66;
+	}
 
 	player->key_up = false;
 	player->key_down = false;
@@ -175,10 +190,10 @@ void draw_line(t_data *data, double x1, double y1, double x2, double y2)
     double delta_x = x2 - x1;
     double delta_y = y2 - y1;
     double step = (fabs(delta_x) > fabs(delta_y)) ? fabs(delta_x) : fabs(delta_y);
-    
+
     double dx = delta_x / step;
     double dy = delta_y / step;
-    
+
     double x = x1;
     double y = y1;
     int i = 0;
@@ -195,7 +210,7 @@ void draw_line(t_data *data, double x1, double y1, double x2, double y2)
 void draw_rays_minimap(t_data *data)
 {
     int x = 0;
-    
+
 
     while (x < WIDTH)
     {
@@ -262,7 +277,7 @@ void draw_rays_minimap(t_data *data)
 
         draw_line(data, start_x, start_y, end_x, end_y);
 
-        x += 1; 
+        x += 1;
     }
 }
 
@@ -286,30 +301,32 @@ int main(int argc, char **argv)
 	t_data	data;
 
 	(void)argv;
-	if (argc == 2)
+	if (argc != 2)
 	{
-		init_data(&data);
-		mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
-		mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
-		mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
-			ft_close, &data);
-		mlx_loop_hook(data.mlx, update, &data);
-		mlx_loop(data.mlx);
-	}
-	else
 		print_error_exit("Usage: ./cub3D <map file.ber>\n");
+		return 1;
+	}
+	if (init_data(&data, argv))
+		return 1;
+	mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
+	mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
+	mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
+		ft_close, &data);
+	mlx_loop_hook(data.mlx, update, &data);
+	mlx_loop(data.mlx);
+	return 0;
 }
 
 /**
  * The Core Idea: Simulating 3D with 2D
-Imagine you are standing in the middle of the map. 
+Imagine you are standing in the middle of the map.
 You can't see the whole map at once, only what's in your Field of View (FOV).
 
-The program simulates this by sending out a series of "rays" 
-from your player's position across your FOV. For every single vertical column of 
+The program simulates this by sending out a series of "rays"
+from your player's position across your FOV. For every single vertical column of
 pixels on your screen, one ray is cast.
 
-Each ray travels in a straight line until it hits a wall. 
+Each ray travels in a straight line until it hits a wall.
 
 The program then does two things:
 
@@ -317,7 +334,7 @@ The program then does two things:
 
 2) Based on that distance, it draws a vertical line in the corresponding column on the screen.
 
-If the wall is close, the distance is short, so the vertical line is drawn very tall. 
-If the wall is far away, the distance is long, and the line is drawn short. 
+If the wall is close, the distance is short, so the vertical line is drawn very tall.
+If the wall is far away, the distance is long, and the line is drawn short.
 This creates the illusion of depth and perspective.
  */

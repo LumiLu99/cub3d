@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/21 14:25:22 by yelu             ###   ########.fr       */
+/*   Updated: 2025/12/28 20:17:50 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <stdbool.h>
 # include <math.h>
 # include <sys/time.h>
+# include <stdio.h>
+# include <fcntl.h>
 
 // Colours
 # define RED_PIXEL 0xFF0000
@@ -48,12 +50,19 @@
 # define SOUTH 2
 # define WEST 3
 
+typedef enum parse_state {
+	ELEMENTS,
+	MAP,
+	INVALID
+}	t_parse_state;
+
 typedef struct s_map
 {
-	char	*map_arr[16];
-	int		x_len_map;
-	int		y_len_map;
-
+	char	**map_arr;
+	int		map_rows;
+	int		map_column;
+	int		floor;
+	int		ceiling;
 }	t_map;
 
 typedef struct s_minimap
@@ -64,6 +73,7 @@ typedef struct s_minimap
 
 typedef struct s_player
 {
+	char	direction;
 	double	pos_x;
 	double	pos_y;
 	double	dir_x;
@@ -136,7 +146,6 @@ typedef struct s_data
 	t_ray		ray;
 }	t_data;
 
-
 int	ft_close(t_data *data);
 int	update(void *param);
 
@@ -163,5 +172,28 @@ void		print_error_exit(char *str);
 void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 long long	get_time_in_ms(void);
 void		print_fps(t_data *data);
+
+// parse_map.c
+bool check_file_ext(const char *filename, const char *ext);
+// int open_file(const char *filename);
+int parse_file(const char *filename, t_data *data);
+bool check_map_character(char c);
+int parse_map(const char *filename, t_data *data);
+bool read_map(t_map *map, char *line);
+
+
+//parse_texture.c
+bool error_message(char *message);
+int identify_parse_state(char *line);
+
+//parse_color.c
+int parse_color(char *identifier, char *color);
+
+// parsing_utils.c
+void free_2d_array(char **array);
+bool error_message(char *message);
+bool check_file_ext(const char *filename, const char *ext);
+void cleanup_data(t_data *data);
+void cleanup_texture(char **texture, char *texture_path);
 
 #endif
