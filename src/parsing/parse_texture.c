@@ -1,75 +1,69 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   texture.c                                          :+:      :+:    :+:   */
+/*   parse_texture.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 21:42:28 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/21 19:25:53 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 15:42:15 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/cub3d.h"
 
-bool error_message(char *message)
-{
-	ft_putendl_fd("Error", 2);
-	ft_putendl_fd(message, 2);
-	return false;
-}
-
-int parse_color(char *identifier, char *color)
-{
-	char **rgb = ft_split(color, ',');
-	int counter = 0;
-	while (rgb[counter])
-		counter++;
-	if (counter != 3)
-		return (-1);
-	int r = convert_rgb_to_int(rgb[0]);
-	int g = convert_rgb_to_int(rgb[1]);
-	int b = convert_rgb_to_int(rgb[2]);
-	// convert into hexa format 0xFFFFFF in integer form
-	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-		return (-1);
-	return (r << 16 | g << 8 | b);
-}
-
+// for tecture path, use strdup to allocate new memory to store the value,
+// avoid dangling pointer when point to split array
 int parse_texture(char *line, t_data *data)
 {
+	char **texture;
+	int counter;
+	char *identifier;
+	char *texture_path;
+	int i;
 	const char *texture_identifier[4] = {"NO", "EA", "SO", "WE"};
-	char **texture = ft_split(line, ' ');
+
+	texture_path = NULL;
+	texture = ft_split(line, ' ');
 	if (!texture)
-	{
 		return (error_message("Failed to split texture"));
-	}
-	int counter = 0;
+	counter = 0;
 	while (texture[counter])
 		counter++;
 	if (counter != 2)
-		return (error_message("Invalid element format"));
-	char *identifier = texture[0];
-	// printf("counter: %d, identifier: %s\n", counter, identifier);
-	if (ft_strlen(identifier) > 2)
 	{
-		return (error_message("Invalid type identifier"));
+		cleanup_texture(texture, texture_path);
+		return (error_message("Invalid element format"));
 	}
-	char *texture_path = ft_strtrim(texture[1], "\t\n");
+	identifier = texture[0];
+	if (ft_strlen(identifier) > 2)
+		return (error_message("Invalid type identifier"));
+	texture_path = ft_strtrim(texture[1], "\t\n");
 	if (!texture_path)
 		return (error_message("Failed to strtrim string"));
-	// printf("texture path: %s\n", texture_path);
-	int i = 0;
+	int fd = open(texture_path, O_RDONLY);
+	if (fd == -1)
+	{
+		cleanup_texture(texture, texture_path);
+		return (error_message("Invalid fd: Failed to open file"));
+	}
+	close(fd);
+	i = 0;
 	while(i < 4)
 	{
 		if (ft_strncmp(identifier, texture_identifier[i], ft_strlen(identifier)) == 0)
 		{
 			if (data->tex[i].tex_path != NULL)
+			{
+				cleanup_texture(texture, texture_path);
 				return(error_message("Duplicate elements found: texture"));
+			}
 			data->tex[i].tex_path = ft_strdup(texture_path);
-			// printf("tex: %s\n", data->tex[i].tex_path);
 			if (!check_file_ext(texture_path, ".xpm"))
+			{
+				cleanup_texture(texture, texture_path);
 				return (error_message("Invalid texture file: must be end with .xpm"));
+			}
 		}
 		i++;
 	}
@@ -79,17 +73,22 @@ int parse_texture(char *line, t_data *data)
 		{
 			int color = parse_color(identifier, texture_path);
 			if (color == -1)
+			{
+				cleanup_texture(texture, texture_path);
 				return (error_message("Invalid RGB color"));
-			// printf("color: %d\n", color);
+			}
 			if (line[0] == 'F')
 				data->map.floor = color;
 			else
 				data->map.ceiling = color;
 		}
 		else
+		{
+			cleanup_texture(texture, texture_path);
 			return (error_message("Duplicate elements found: floor and ceiling"));
+		}
 	}
-	// TODO: free everything, write function free 2d array
+	cleanup_texture(texture, texture_path);
 	return 1;
 }
 
@@ -117,37 +116,44 @@ int identify_parse_state(char *line)
 		return INVALID;
 }
 
+/**
+ * this function verifies the sequence of the elements in the map file
+ * divided into 2 section: ELEMENTS and MAP (in order)
+ * must start with section ELEMENTS (can be seperated by new line)
+ * skip when see new line or error
+ * let it read until the end of the file
+ * store error flag when there is error, after finish read only exit
+ * identify the type of each line
+ * when reach map, check each element has their own value
+ * when found element in map, return error
+ * at the end validate the last part is map
+ */
 int parse_file(const char *filename, t_data *data)
 {
 	t_parse_state	state;
-	int error;
+	int				error;
+	int				fd;
+	char			*line;
 
 	state = ELEMENTS;
 	error = 0;
 	if (!check_file_ext(filename, ".cub"))
-	{
 		return (error_message("Invalid map: map file extension must be \".cub\"\n"));
-	}
-	int fd = open(filename, O_RDONLY);
+	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (error_message("Invalid fd: Failed to open file"));
-	char *line = get_next_line(fd);
+	line = get_next_line(fd);
 	while (line)
 	{
-		// if empty line or error - skip
 		if ((line[0] == '\n' && state == ELEMENTS) || error == -1)
 		{
 			free(line);
 			line = get_next_line(fd);
 			continue;
 		}
-		// error = -1;
 		t_parse_state type = identify_parse_state(line);
-		// printf("line: %s, type: %d\n", line, type);
-		//check all the elements first
 		if (state == ELEMENTS)
 		{
-			// if got type is map return error
 			if (type == MAP)
 			{
 				if(!check_all_element_exists(data))
@@ -158,7 +164,6 @@ int parse_file(const char *filename, t_data *data)
 					continue ;
 				}
 				state = MAP;
-				// parse_map(line, data);
 			}
 			else if (!parse_texture(line, data))
 			{
@@ -193,8 +198,7 @@ int parse_file(const char *filename, t_data *data)
 	close(fd);
 	if (error == -1)
 		return 0;
-	// at the end validate the last part is map
 	if (state == ELEMENTS)
-		return (error_message("No map found"));
+		return (error_message("No textures or map found"));
 	return 1;
 }

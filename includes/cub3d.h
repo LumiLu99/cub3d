@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/21 19:27:09 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 15:02:51 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,20 +177,27 @@ void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 long long	get_time_in_ms(void);
 void		print_fps(t_data *data);
 
-// parsing
+// parse_map.c
 bool check_file_ext(const char *filename, const char *ext);
 // int open_file(const char *filename);
 int parse_file(const char *filename, t_data *data);
-bool check_character(char c);
+bool check_map_character(char c);
 int parse_map(const char *filename, t_data *data);
 bool read_map(t_map *map, char *line);
 
 
-//texture.c
+//parse_texture.c
 bool error_message(char *message);
 int identify_parse_state(char *line);
 
 //parse_color.c
 int parse_color(char *identifier, char *color);
+
+// parsing_utils.c
+void free_2d_array(char **array);
+bool error_message(char *message);
+bool check_file_ext(const char *filename, const char *ext);
+void cleanup_data(t_data *data);
+void cleanup_texture(char **texture, char *texture_path);
 
 #endif

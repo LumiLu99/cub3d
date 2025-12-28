@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 19:25:06 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/21 20:10:31 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 15:11:48 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,8 @@ static int	convert_rgb_to_int(const char *str)
 	return (sum);
 }
 
-void free_2d_array(void **array)
-{
-	int i = 0;
-	while (array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free (array);
-}
-
+// ensure that there are 3 elements passed in as color
+// return type: convert into hexa format 0xFFFFFF in integer form
 int parse_color(char *identifier, char *color)
 {
 	char **rgb;
@@ -56,12 +47,14 @@ int parse_color(char *identifier, char *color)
 	while (rgb[counter])
 		counter++;
 	if (counter != 3)
+	{
+		free_2d_array(rgb);
 		return (-1);
+	}
 	int r = convert_rgb_to_int(rgb[0]);
 	int g = convert_rgb_to_int(rgb[1]);
 	int b = convert_rgb_to_int(rgb[2]);
-	free(rgb);
-	// convert into hexa format 0xFFFFFF in integer form
+	free_2d_array(rgb);
 	if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
 		return (-1);
 	return (r << 16 | g << 8 | b);

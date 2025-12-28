@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/21 19:24:04 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 14:52:23 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../includes/cub3d.h"
 
-bool check_file_ext(const char *filename, const char *ext);
-bool check_character(char c);
+bool check_map_character(char c);
 void print_2d_map(char **array);
 void allocate_map_array(t_map *map);
 bool validate_player(t_map *map);
@@ -21,28 +20,7 @@ void store_2d_array(t_map *map, const char *filename);
 bool read_map(t_map *map, char *line);
 int parse_map(const char *filename, t_data *data);
 
-bool check_file_ext(const char *filename, const char *ext)
-{
-	size_t filename_len = ft_strlen(filename);
-	size_t ext_len = ft_strlen(ext);
-
-	if (filename[0] == '\0')
-		return false;
-	if (filename_len <= ext_len)
-		return false;
-	while (filename[filename_len - 1] && ext_len > 0)
-	{
-		// printf("filename[%c], ext[%c]\n", filename[filename_len - 1], ext[ext_len - 1]);
-		if (filename[filename_len - 1] != ext[ext_len - 1])
-			return false;
-		// printf("filename_len: %zu, ext: %zu\n", filename_len, ext_len);
-		filename_len--;
-		ext_len--;
-	}
-	return true;
-}
-
-bool check_character(char c)
+bool check_map_character(char c)
 {
 	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W' && c != 'E' && c != ' ')
 		return false;
@@ -55,7 +33,7 @@ bool check_character(char c)
 // for each row, 2 for space and 1 for '\0'
 void allocate_map_array(t_map *map)
 {
-	printf("rows: %d, column: %d\n", map->sum_rows, map->column);
+	// printf("rows: %d, column: %d\n", map->sum_rows, map->column);
 	map->array = (char **)malloc(sizeof(char*) * (map->sum_rows + 3));
 	if(!map->array)
 	{
@@ -79,9 +57,14 @@ void allocate_map_array(t_map *map)
 	// print_2d_map(map->array);
 }
 
+/**
+ * read file in map section and store the map in a 2d array
+ */
 void store_2d_array(t_map *map, const char *filename)
 {
-	int fd = open(filename, O_RDONLY);
+	int fd;
+
+	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 	{
 		printf("Invalid fd: Failed to open file\n");
@@ -109,7 +92,7 @@ void store_2d_array(t_map *map, const char *filename)
 		row++;
 	}
 	close(fd);
-	print_2d_map(map->array);
+	// print_2d_map(map->array);
 }
 
 void print_2d_map(char **array)
@@ -123,19 +106,25 @@ void print_2d_map(char **array)
 	}
 }
 
-// calculate the row of map
+/**
+ * calculate the row and column of map
+ * if see newline in section map, return error
+ * store the maximum length for column
+ */
 bool read_map(t_map *map, char *line)
 {
+	int len;
+	int i;
+
 	if (line[0] == '\n')
 	{
 		return (error_message("Empty lines in the map"));
 	}
-	// exclude '\n'
-	int len = ft_strlen(line) - 1;
-	int i = 0;
+	len = ft_strlen(line) - 1;
+	i = 0;
 	while (i < len - 1)
 	{
-		if (!check_character(line[i]))
+		if (!check_map_character(line[i]))
 		{
 			printf("Invalid character in map: [%c] at row %d column %d\n", line[i], map->sum_rows, i);
 			return false;
@@ -167,7 +156,7 @@ bool validate_player(t_map *map)
 		}
 		i++;
 	}
-	printf("player: %d pos >> x: %d, y: %d\n", player, map->x_pos, map->y_pos);
+	// printf("player: %d pos >> x: %d, y: %d\n", player, map->x_pos, map->y_pos);
 	if (player == 1)
 		return true;
 	return false;
@@ -238,9 +227,15 @@ int	main(int ac, char **av)
 	}
 	init_data(&data);
 	if (!parse_file(av[1], &data))
+	{
+		cleanup_data(&data);
 		return 1;
+	}
 	if (!parse_map(av[1], &data))
+	{
+		cleanup_data(&data);
 		return 1;
+	}
 	return 0;
 }
 
