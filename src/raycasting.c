@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 00:19:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/11/21 14:25:09 by yelu             ###   ########.fr       */
+/*   Updated: 2025/12/28 20:21:43 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,12 +152,12 @@ void	ray_tex_draw(t_data *data, int x)
 	{
 		if (y < data->ray.draw_start)
 		{
-			my_mlx_pixel_put(data, x, y, WHITE_PIXEL);
+			my_mlx_pixel_put(data, x, y, data->map.ceiling);
 		}
 		else if (y <= data->ray.draw_end)
 			ray_tex_wall(data, x, y);
 		else
-			my_mlx_pixel_put(data, x, y, GRAY_PIXEL);
+			my_mlx_pixel_put(data, x, y, data->map.floor);
 		y++;
 	}
 }

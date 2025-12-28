@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 14:52:23 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 17:03:31 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 bool check_map_character(char c);
 void print_2d_map(char **array);
 void allocate_map_array(t_map *map);
-bool validate_player(t_map *map);
+bool validate_player(t_map *map, t_player *player);
 void store_2d_array(t_map *map, const char *filename);
 bool read_map(t_map *map, char *line);
 int parse_map(const char *filename, t_data *data);
@@ -28,33 +28,33 @@ bool check_map_character(char c)
 }
 
 // add outder border around the map
-// total rows = sum_rows + top + bottom + NULL
-// when allocate for column +2, as i = 0,
+// total rows = map_rows + top + bottom + NULL
+// when allocate for map_map_column +2, as i = 0,
 // for each row, 2 for space and 1 for '\0'
 void allocate_map_array(t_map *map)
 {
-	// printf("rows: %d, column: %d\n", map->sum_rows, map->column);
-	map->array = (char **)malloc(sizeof(char*) * (map->sum_rows + 3));
-	if(!map->array)
+	// printf("rows: %d, map_map_column: %d\n", map->map_rows, map->map_column);
+	map->map_arr = (char **)malloc(sizeof(char*) * (map->map_rows + 3));
+	if(!map->map_arr)
 	{
 		ft_putstr_fd("Failed to malloc\n", 2);
 		return ;
 	}
 	int i = 0;
-	while (i < map->sum_rows + 2)
+	while (i < map->map_rows + 2)
 	{
-		map->array[i] = (char *)malloc(sizeof(char) * (map->column + 3));
-		if(!map->array[i])
+		map->map_arr[i] = (char *)malloc(sizeof(char) * (map->map_column + 3));
+		if(!map->map_arr[i])
 		{
 			ft_putstr_fd("Failed to malloc\n", 2);
 			return ;
 		}
-		ft_memset(map->array[i], ' ', map->column + 2);
-		map->array[i][map->column + 2] = '\0';
+		ft_memset(map->map_arr[i], ' ', map->map_column + 2);
+		map->map_arr[i][map->map_column + 2] = '\0';
 		i++;
 	}
-	map->array[i] = NULL;
-	// print_2d_map(map->array);
+	map->map_arr[i] = NULL;
+	// print_2d_map(map->map_arr);
 }
 
 /**
@@ -85,14 +85,14 @@ void store_2d_array(t_map *map, const char *filename)
 		int col = 1;
 		while (line[i] != '\n')
 		{
-			map->array[row][col++] = line[i++];
+			map->map_arr[row][col++] = line[i++];
 		}
 		free(line);
 		line = get_next_line(fd);
 		row++;
 	}
 	close(fd);
-	// print_2d_map(map->array);
+	// print_2d_map(map->map_arr);
 }
 
 void print_2d_map(char **array)
@@ -107,9 +107,9 @@ void print_2d_map(char **array)
 }
 
 /**
- * calculate the row and column of map
+ * calculate the row and map_column of map
  * if see newline in section map, return error
- * store the maximum length for column
+ * store the maximum length for map_column
  */
 bool read_map(t_map *map, char *line)
 {
@@ -126,38 +126,39 @@ bool read_map(t_map *map, char *line)
 	{
 		if (!check_map_character(line[i]))
 		{
-			printf("Invalid character in map: [%c] at row %d column %d\n", line[i], map->sum_rows, i);
+			printf("Invalid character in map: [%c] at row %d map_column %d\n", line[i], map->map_rows, i);
 			return false;
 		}
 		i++;
 	}
-	if (map->column < len)
-		map->column = len;
-	map->sum_rows++;
+	if (map->map_column < len)
+		map->map_column = len;
+	map->map_rows++;
 	return true;
 }
 
-bool validate_player(t_map *map)
+bool validate_player(t_map *map, t_player *player)
 {
 	int i = 0;
-	int player = 0;
-	while (map->array[i])
+	int player_count = 0;
+	while (map->map_arr[i])
 	{
 		int j = 0;
-		while (map->array[i][j] != '\0')
+		while (map->map_arr[i][j] != '\0')
 		{
-			if (map->array[i][j] == 'N' || map->array[i][j] == 'S' || map->array[i][j] == 'E' || map->array[i][j] == 'W')
+			if (map->map_arr[i][j] == 'N' || map->map_arr[i][j] == 'S' || map->map_arr[i][j] == 'E' || map->map_arr[i][j] == 'W')
 			{
-				map->x_pos = j;
-				map->y_pos = i;
-				player++;
+				player->direction = map->map_arr[i][j];
+				player->pos_x = (double)j;
+				player->pos_y = (double)i;
+				player_count++;
 			}
 			j++;
 		}
 		i++;
 	}
-	// printf("player: %d pos >> x: %d, y: %d\n", player, map->x_pos, map->y_pos);
-	if (player == 1)
+	// printf("player: %d pos >> x: %d, y: %d\n", player, data->player.pos_x, data->player.pos_y);
+	if (player_count == 1)
 		return true;
 	return false;
 }
@@ -170,18 +171,18 @@ bool check_walls(char c)
 }
 
 // when see 0 or player check four direction is fill with walls
-bool validate_map(t_map *map)
+bool validate_map(t_map *map, t_player *player)
 {
 	int i = 0;
-	while (map->array[i])
+	while (map->map_arr[i])
 	{
 		int j = 0;
-		while (map->array[i][j] != '\0')
+		while (map->map_arr[i][j] != '\0')
 		{
-			if (map->array[i][j] == '0' || (j == map->x_pos && i == map->y_pos))
+			if (map->map_arr[i][j] == '0' || ((double)j == player->pos_x && (double)i == player->pos_y))
 			{
-				// printf("check no walls >> [%c] x: %d, y: %d\n", map->array[i][j], j, i);
-				if (!check_walls(map->array[i - 1][j]) || !check_walls(map->array[i + 1][j]) || !check_walls(map->array[i][j - 1]) || !check_walls(map->array[i][j + 1]))
+				// printf("check no walls >> [%c] x: %d, y: %d\n", map->map_arr[i][j], j, i);
+				if (!check_walls(map->map_arr[i - 1][j]) || !check_walls(map->map_arr[i + 1][j]) || !check_walls(map->map_arr[i][j - 1]) || !check_walls(map->map_arr[i][j + 1]))
 				{
 					// printf("no walls >> x: %d, y: %d\n", j, i);
 					return false;
@@ -198,46 +199,39 @@ int parse_map(const char *filename, t_data *data)
 {
 	allocate_map_array(&data->map);
 	store_2d_array(&data->map, filename);
-	if (!validate_player(&data->map))
+	if (!validate_player(&data->map, &data->player))
 	{
 		return(error_message("Map should consists of one player only"));
 	}
-	if (!validate_map(&data->map))
+	if (!validate_map(&data->map, &data->player))
 	{
 		return (error_message("Invalid map: Map not close with walls"));
 	}
 	return 1;
 }
 
-void init_data(t_data *data)
-{
-	ft_bzero(data, sizeof(t_data));
-	data->map.floor = -1;
-	data->map.ceiling = -1;
-}
+// int	main(int ac, char **av)
+// {
+// 	t_data data;
 
-int	main(int ac, char **av)
-{
-	t_data data;
-
-	if (ac != 2)
-	{
-		ft_putstr_fd("Number of arguments must be 2", 2);
-		return 1;
-	}
-	init_data(&data);
-	if (!parse_file(av[1], &data))
-	{
-		cleanup_data(&data);
-		return 1;
-	}
-	if (!parse_map(av[1], &data))
-	{
-		cleanup_data(&data);
-		return 1;
-	}
-	return 0;
-}
+// 	if (ac != 2)
+// 	{
+// 		ft_putstr_fd("Number of arguments must be 2", 2);
+// 		return 1;
+// 	}
+// 	init_data(&data);
+// 	if (!parse_file(av[1], &data))
+// 	{
+// 		cleanup_data(&data);
+// 		return 1;
+// 	}
+// 	if (!parse_map(av[1], &data))
+// 	{
+// 		cleanup_data(&data);
+// 		return 1;
+// 	}
+// 	return 0;
+// }
 
 // Requirements:
 // 1. map must composed of 0 & 1 & (N/S/E/W)

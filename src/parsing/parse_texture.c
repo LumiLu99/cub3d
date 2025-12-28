@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 21:42:28 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 15:42:15 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 20:10:23 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,16 @@ int parse_texture(char *line, t_data *data)
 	}
 	identifier = texture[0];
 	if (ft_strlen(identifier) > 2)
-		return (error_message("Invalid type identifier"));
-	texture_path = ft_strtrim(texture[1], "\t\n");
-	if (!texture_path)
-		return (error_message("Failed to strtrim string"));
-	int fd = open(texture_path, O_RDONLY);
-	if (fd == -1)
 	{
 		cleanup_texture(texture, texture_path);
-		return (error_message("Invalid fd: Failed to open file"));
+		return (error_message("Invalid type identifier"));
 	}
-	close(fd);
+	texture_path = ft_strtrim(texture[1], "\t\n");
+	if (!texture_path)
+	{
+		cleanup_texture(texture, texture_path);
+		return (error_message("Failed to strtrim string"));
+	}
 	i = 0;
 	while(i < 4)
 	{
@@ -64,6 +63,13 @@ int parse_texture(char *line, t_data *data)
 				cleanup_texture(texture, texture_path);
 				return (error_message("Invalid texture file: must be end with .xpm"));
 			}
+			int fd = open(texture_path, O_RDONLY);
+			if (fd == -1)
+			{
+				cleanup_texture(texture, texture_path);
+				return (error_message("Invalid fd: Failed to open .xpm file"));
+			}
+			close(fd);
 		}
 		i++;
 	}
@@ -185,7 +191,8 @@ int parse_file(const char *filename, t_data *data)
 		}
 		if (type == INVALID)
 		{
-			write(2, "Invalid element in file\n", 25);
+			ft_putendl_fd("Error", 2);
+			ft_putendl_fd("Invalid element in file", 2);
 			error = -1;
 			free(line);
 			line = get_next_line(fd);

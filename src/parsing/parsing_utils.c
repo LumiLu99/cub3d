@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/28 13:18:42 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 15:43:42 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 17:02:55 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,10 @@ void free_texture_path(t_data *data)
 void cleanup_data(t_data *data)
 {
 	free_texture_path(data);
-	if(data->map.array)
+	if(data->map.map_arr)
 	{
-		free_2d_array(data->map.array);
-		data->map.array = NULL;
+		free_2d_array(data->map.map_arr);
+		data->map.map_arr = NULL;
 	}
 }
 

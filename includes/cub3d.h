@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/28 15:02:51 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/28 20:17:50 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,9 @@ typedef enum parse_state {
 
 typedef struct s_map
 {
-	char	*map_arr[16];
-	int		x_len_map;
-	int		y_len_map;
-	char	**array;
-	int		sum_rows;
-	int		column;
-	int		x_pos;
-	int		y_pos;
+	char	**map_arr;
+	int		map_rows;
+	int		map_column;
 	int		floor;
 	int		ceiling;
 }	t_map;
@@ -78,6 +73,7 @@ typedef struct s_minimap
 
 typedef struct s_player
 {
+	char	direction;
 	double	pos_x;
 	double	pos_y;
 	double	dir_x;

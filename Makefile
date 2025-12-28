@@ -11,6 +11,7 @@ NAME = cub3D
 
 # Directories
 SRC_DIR = src
+PARSING_DIR = parsing
 OBJ_DIR = obj
 INC_DIR = include
 LIBFT_DIR = libft
@@ -25,13 +26,14 @@ CFLAGS = -O3 # -Wall -Werror -Wextra
 RM = rm -rf
 
 # Source files
-SRC = $(addprefix $(SRC_DIR)/, main.c utils.c key.c player.c raycasting.c texture.c)
+SRC = $(addprefix $(SRC_DIR)/, main.c utils.c key.c player.c raycasting.c texture.c) \
+		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_color.c parsing_utils.c)
 
 # Object files
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Build rules
-all: $(LIBFT) $(MLX_LIB) $(NAME) 
+all: $(LIBFT) $(MLX_LIB) $(NAME)
 
 $(LIBFT): FORCE
 	@echo "$(PINK)$(BOLD)=======================================$(RESET)"
@@ -40,7 +42,7 @@ $(LIBFT): FORCE
 	@make -C $(LIBFT_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR) $(OBJ_DIR)/$(PARSING_DIR)
 	@$(CC) $(CFLAGS) $(INC) -Imlx -O3 -c $< -o $@
 	@echo "$(YELLOW)Compiled ✅ $(GREEN) $(BOLD) $< $(RESET)"
 
@@ -85,6 +87,6 @@ FORCE:
 
 .PHONY: bonus all clean fclean re
 
-# -I(include directory) - Tells the compiler to look for header files 
+# -I(include directory) - Tells the compiler to look for header files
 # -L(directory) - Tells the compiler to look for .a library path in this folder
 # -l(%.a) - Tells the compiler to look for that specified .a file
