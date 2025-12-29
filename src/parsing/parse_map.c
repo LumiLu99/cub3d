@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 20:55:10 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/29 23:56:37 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,18 +63,20 @@ void allocate_map_array(t_map *map)
 void store_2d_array(t_map *map, const char *filename)
 {
 	int fd;
+	t_parse_state type;
 
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 	{
-		printf("Invalid fd: Failed to open file\n");
+		ft_putendl_fd("Error", fd);
+		ft_putendl_fd("Invalid fd: Failed to open file", 2);
 		return ;
 	}
 	char *line = get_next_line(fd);
 	int row = 1;
 	while (line)
 	{
-		t_parse_state type = identify_parse_state(line);
+		type = identify_parse_state(line[0]);
 		if (line[0] == '\n' || type == ELEMENTS)
 		{
 			free(line);

@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/28 20:17:50 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/29 23:53:44 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@
 # define EAST 1
 # define SOUTH 2
 # define WEST 3
+
+// Error message
+# define INVALID_XPM_FILE_EXT "Invalid texture file: Must end with extension \".xpm\""
+# define INVALID_CUB_FILE_EXT "Invalid cub file: Must end with extension \".cub\""
 
 typedef enum parse_state {
 	ELEMENTS,
@@ -183,8 +187,10 @@ bool read_map(t_map *map, char *line);
 
 
 //parse_texture.c
-bool error_message(char *message);
-int identify_parse_state(char *line);
+int parse_texture(char *line, t_data *data);
+int identify_parse_state(char c);
+bool check_and_open_file(const char *file, const char *ext, int *fd, char *msg);
+bool check_all_element_exists(t_data *data);
 
 //parse_color.c
 int parse_color(char *identifier, char *color);

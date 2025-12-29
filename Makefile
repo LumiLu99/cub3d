@@ -27,7 +27,7 @@ RM = rm -rf
 
 # Source files
 SRC = $(addprefix $(SRC_DIR)/, main.c utils.c key.c player.c raycasting.c texture.c) \
-		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_color.c parsing_utils.c)
+		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_color.c parsing_utils.c parse.c)
 
 # Object files
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
