@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 20:55:10 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/31 13:56:15 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,8 @@ bool validate_player(t_map *map, t_player *player)
 			if (map->map_arr[i][j] == 'N' || map->map_arr[i][j] == 'S' || map->map_arr[i][j] == 'E' || map->map_arr[i][j] == 'W')
 			{
 				player->direction = map->map_arr[i][j];
-				player->pos_x = (double)j;
-				player->pos_y = (double)i;
+				player->pos_x = (double)j + 0.5;
+				player->pos_y = (double)i +0.5;
 				player_count++;
 			}
 			j++;

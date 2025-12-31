@@ -12,6 +12,8 @@ NAME = cub3D
 # Directories
 SRC_DIR = src
 PARSING_DIR = parsing
+MOVEMENT_DIR = movement
+RAYCAST_DIR = raycasting
 OBJ_DIR = obj
 INC_DIR = include
 LIBFT_DIR = libft
@@ -26,7 +28,9 @@ CFLAGS = -O3 # -Wall -Werror -Wextra
 RM = rm -rf
 
 # Source files
-SRC = $(addprefix $(SRC_DIR)/, main.c utils.c key.c player.c raycasting.c texture.c) \
+SRC = $(addprefix $(SRC_DIR)/, main.c) \
+		$(addprefix $(SRC_DIR)/$(MOVEMENT_DIR)/, key.c player.c)	\
+		$(addprefix $(SRC_DIR)/$(RAYCAST_DIR)/, raycasting.c texture.c utils.c)	\
 		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_color.c parsing_utils.c)
 
 # Object files
@@ -42,7 +46,7 @@ $(LIBFT): FORCE
 	@make -C $(LIBFT_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR) $(OBJ_DIR)/$(PARSING_DIR)
+	@mkdir -p $(OBJ_DIR) $(OBJ_DIR)/$(PARSING_DIR) $(OBJ_DIR)/$(MOVEMENT_DIR) $(OBJ_DIR)/$(RAYCAST_DIR) $(OBJ_DIR)/$(PARSING_DIR)
 	@$(CC) $(CFLAGS) $(INC) -Imlx -O3 -c $< -o $@
 	@echo "$(YELLOW)Compiled ✅ $(GREEN) $(BOLD) $< $(RESET)"
 
@@ -63,7 +67,7 @@ $(OBJ_DIR): FORCE
 
 # Clean object files and executable
 clean:
-	@echo "$(RED)❌ Deleting\t$(RESET)$(WHITE)Objects$(RESET)\t$(OBJB_DIR)";
+	@echo "$(RED)❌ Deleting\t$(RESET)$(WHITE)Objects$(RESET)\t$(OBJ_DIR)";
 	@make -C $(LIBFT_DIR) clean
 	@make -C $(MLX_DIR) clean
 	@$(RM) $(OBJ_DIR)
@@ -79,9 +83,9 @@ fclean: clean
 re: fclean all
 
 # debug:
-#	@echo "SRC: $(SRC)"
-#	@echo "OBJ: $(OBJ)"
-#	@echo "OBJ_DIR: $(OBJ_DIR)"
+# 	@echo "SRC: $(SRC)"
+# 	@echo "OBJ: $(OBJ)"
+# 	@echo "OBJ_DIR: $(OBJ_DIR)"
 
 FORCE:
 

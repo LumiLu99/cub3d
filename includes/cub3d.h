@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/28 20:17:50 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/31 16:03:14 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,9 +146,11 @@ typedef struct s_data
 	t_ray		ray;
 }	t_data;
 
+// loop
 int	ft_close(t_data *data);
 int	update(void *param);
 
+// player movement
 void	move_player(t_data *data);
 
 // key
