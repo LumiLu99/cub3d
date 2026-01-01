@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 21:42:28 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/29 23:54:06 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/01 15:21:52 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static int handle_walls(char *identifier, char *texture_path, t_data *data);
 static int handle_floor_and_ceiling(char *identifier, char *texture_path, t_data *data);
 static int validate_texture(char **texture);
+int parse_texture(char *line, t_data *data);
 
 static int handle_walls(char *identifier, char *texture_path, t_data *data)
 {
@@ -104,37 +105,4 @@ int parse_texture(char *line, t_data *data)
 		result = 0;
 	cleanup_texture(texture, texture_path);
 	return (result);
-}
-
-bool check_all_element_exists(t_data *data)
-{
-	int i = 0;
-	while (i < 4)
-	{
-		if (data->tex[i].tex_path == NULL)
-			return(error_message("Texture elements given incomplete"));
-		i++;
-	}
-	if (data->map.floor == -1 || data->map.ceiling == -1)
-		return(error_message("Floor and ceiling elements given incomplete"));
-	return true;
-}
-
-int identify_parse_state(char c)
-{
-	if (c == 'N' || c == 'W' || c == 'S' || c == 'E' || c == 'F' || c == 'C')
-		return ELEMENTS;
-	else if (c == ' ' || c == '1' || c == '0')
-		return MAP;
-	return INVALID;
-}
-
-bool check_and_open_file(const char *file, const char *ext, int *fd, char *msg)
-{
-	if (!check_file_ext(file, ext))
-		return (error_message(msg));
-	*fd = open(file, O_RDONLY);
-	if (*fd == -1)
-		return (error_message("Invalid fd or path: Failed to open file"));
-	return true;
 }

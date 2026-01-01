@@ -2,7 +2,8 @@
 
 static int handle_empty_line_and_error(char **line, int *error, t_parse_state *state);
 static int handle_element_state(char **line, t_parse_state *state, t_data *data, t_parse_state type);
-void process_line(char **line, int *error, t_parse_state *state, t_data *data);
+static void process_line(char **line, int *error, t_parse_state *state, t_data *data);
+int parse_file(const char *filename, t_data *data);
 
 static int  handle_empty_line_and_error(char **line, int *error, t_parse_state *state)
 {
@@ -24,7 +25,7 @@ static int  handle_element_state(char **line, t_parse_state *state, t_data *data
 	return 1;
 }
 
-void    process_line(char **line, int *error, t_parse_state *state, t_data *data)
+static void    process_line(char **line, int *error, t_parse_state *state, t_data *data)
 {
 	t_parse_state   type;
 	

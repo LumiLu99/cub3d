@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/29 23:53:44 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/01 15:25:42 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,28 +177,33 @@ void		my_mlx_pixel_put(t_data *data, int x, int y, int color);
 long long	get_time_in_ms(void);
 void		print_fps(t_data *data);
 
-// parse_map.c
-bool check_file_ext(const char *filename, const char *ext);
-// int open_file(const char *filename);
+//parse.c
 int parse_file(const char *filename, t_data *data);
-bool check_map_character(char c);
-int parse_map(const char *filename, t_data *data);
-bool read_map(t_map *map, char *line);
 
+// parse_map.c
+int parse_map(const char *filename, t_data *data);
+
+//parse_map2.c
+bool read_map(t_map *map, char *line);
+bool validate_map(t_map *map, t_player *player);
+bool validate_player(t_map *map, t_player *player);
 
 //parse_texture.c
 int parse_texture(char *line, t_data *data);
-int identify_parse_state(char c);
-bool check_and_open_file(const char *file, const char *ext, int *fd, char *msg);
-bool check_all_element_exists(t_data *data);
 
 //parse_color.c
 int parse_color(char *identifier, char *color);
 
 // parsing_utils.c
+int identify_parse_state(char c);
+bool check_and_open_file(const char *file, const char *ext, int *fd, char *msg);
+bool check_all_element_exists(t_data *data);
+bool check_file_ext(const char *filename, const char *ext);
+
+// parsing_free.c
 void free_2d_array(char **array);
 bool error_message(char *message);
-bool check_file_ext(const char *filename, const char *ext);
+void free_texture_path(t_data *data);
 void cleanup_data(t_data *data);
 void cleanup_texture(char **texture, char *texture_path);
 

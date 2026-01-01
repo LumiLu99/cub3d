@@ -1,33 +1,41 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing_utils.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/28 13:18:42 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 17:02:55 by wshee            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 # include "../../includes/cub3d.h"
 
-void free_2d_array(char **array)
+int identify_parse_state(char c);
+bool check_and_open_file(const char *file, const char *ext, int *fd, char *msg);
+bool check_all_element_exists(t_data *data);
+bool check_file_ext(const char *filename, const char *ext);
+
+int identify_parse_state(char c)
 {
-	int i = 0;
-	while (array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free (array);
+	if (c == 'N' || c == 'W' || c == 'S' || c == 'E' || c == 'F' || c == 'C')
+		return ELEMENTS;
+	else if (c == ' ' || c == '1' || c == '0')
+		return MAP;
+	return INVALID;
 }
 
-bool error_message(char *message)
+bool check_and_open_file(const char *file, const char *ext, int *fd, char *msg)
 {
-	ft_putendl_fd("Error", 2);
-	ft_putendl_fd(message, 2);
-	return false;
+	if (!check_file_ext(file, ext))
+		return (error_message(msg));
+	*fd = open(file, O_RDONLY);
+	if (*fd == -1)
+		return (error_message("Invalid fd or path: Failed to open file"));
+	return true;
+}
+
+bool check_all_element_exists(t_data *data)
+{
+	int i = 0;
+	while (i < 4)
+	{
+		if (data->tex[i].tex_path == NULL)
+			return(error_message("Texture elements given incomplete"));
+		i++;
+	}
+	if (data->map.floor == -1 || data->map.ceiling == -1)
+		return(error_message("Floor and ceiling elements given incomplete"));
+	return true;
 }
 
 bool check_file_ext(const char *filename, const char *ext)
@@ -49,42 +57,4 @@ bool check_file_ext(const char *filename, const char *ext)
 		ext_len--;
 	}
 	return true;
-}
-
-void free_texture_path(t_data *data)
-{
-	int i = 0;
-	while (i < 4)
-	{
-		if (data->tex[i].tex_path)
-		{
-			free(data->tex[i].tex_path);
-			data->tex[i].tex_path = NULL;
-		}
-		i++;
-	}
-}
-
-void cleanup_data(t_data *data)
-{
-	free_texture_path(data);
-	if(data->map.map_arr)
-	{
-		free_2d_array(data->map.map_arr);
-		data->map.map_arr = NULL;
-	}
-}
-
-void cleanup_texture(char **texture, char *texture_path)
-{
-	if (texture)
-	{
-		free_2d_array(texture);
-		texture = NULL;
-	}
-	if(texture_path)
-	{
-		free(texture_path);
-		texture_path = NULL;
-	}
 }
