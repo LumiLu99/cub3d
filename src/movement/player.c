@@ -39,82 +39,52 @@ static int	check_collision(t_data *data, double x, double y)
 	return (1);
 }
 
-static void	directional_key(t_data *data)
+static void	rotate_player(t_data *data, double rot_speed)
 {
-	double	rot_speed;
+	double	old_dir_x;
+	double	old_plane_x;
 
-	rot_speed = 0.03;
-	if (data->player.left_rotate)
-	{
-		double old_dir_x = data->player.dir_x;
-		data->player.dir_x = data->player.dir_x * cos(-rot_speed)
-			- data->player.dir_y * sin(-rot_speed);
-		data->player.dir_y = old_dir_x * sin(-rot_speed) + data->player.dir_y * cos(-rot_speed);
-		double old_plane_x = data->player.plane_x;
-		data->player.plane_x = data->player.plane_x * cos(-rot_speed)
-			- data->player.plane_y * sin(-rot_speed);
-		data->player.plane_y = old_plane_x * sin(-rot_speed) + data->player.plane_y * cos(-rot_speed);
-	}
-	if (data->player.right_rotate)
-	{
-		double old_dir_x = data->player.dir_x;
-		data->player.dir_x = data->player.dir_x * cos(rot_speed)
-			- data->player.dir_y * sin(rot_speed);
-		data->player.dir_y = old_dir_x * sin(rot_speed) + data->player.dir_y * cos(rot_speed);
-		double old_plane_x = data->player.plane_x;
-		data->player.plane_x = data->player.plane_x * cos(rot_speed)
-			- data->player.plane_y * sin(rot_speed);
-		data->player.plane_y = old_plane_x * sin(rot_speed) + data->player.plane_y * cos(rot_speed);
-	}
+	old_dir_x = data->player.dir_x;
+	data->player.dir_x = data->player.dir_x * cos(rot_speed)
+		- data->player.dir_y * sin(rot_speed);
+	data->player.dir_y = old_dir_x * sin(rot_speed)
+		+ data->player.dir_y * cos(rot_speed);
+	old_plane_x = data->player.plane_x;
+	data->player.plane_x = data->player.plane_x * cos(rot_speed)
+		- data->player.plane_y * sin(rot_speed);
+	data->player.plane_y = old_plane_x * sin(rot_speed)
+		+ data->player.plane_y * cos(rot_speed);
 }
 
-void    move_player(t_data *data)
+static void	attempt_move(t_data *data, double move_x, double move_y)
 {
-	double  move_speed;
-	double  next_x;
-	double  next_y;
+	double	new_x;
+	double	new_y;
 
-	move_speed = 3.0 * data->time.delta_time;
-	
+	new_x = data->player.pos_x + move_x;
+	new_y = data->player.pos_y + move_y;
+	if (check_collision(data, new_x, data->player.pos_y))
+		data->player.pos_x = new_x;
+	if (check_collision(data, data->player.pos_x, new_y))
+		data->player.pos_y = new_y;
+}
+
+void	move_player(t_data *data)
+{
+	double	s;
+
+	s = 3.0 * data->time.delta_time;
+	if (data->player.left_rotate)
+		rotate_player(data, -0.03);
+	if (data->player.right_rotate)
+		rotate_player(data, 0.03);
 	if (data->player.key_up)
-	{
-		next_x = data->player.pos_x + data->player.dir_x * move_speed;
-		next_y = data->player.pos_y + data->player.dir_y * move_speed;
-		
-		if (check_collision(data, next_x, data->player.pos_y))
-		data->player.pos_x = next_x;
-		if (check_collision(data, data->player.pos_x, next_y))
-		data->player.pos_y = next_y;
-	}
+		attempt_move(data, data->player.dir_x * s, data->player.dir_y * s);
 	if (data->player.key_down)
-	{
-		next_x = data->player.pos_x - data->player.dir_x * move_speed;
-		next_y = data->player.pos_y - data->player.dir_y * move_speed;
-		
-		if (check_collision(data, next_x, data->player.pos_y))
-			data->player.pos_x = next_x;
-		if (check_collision(data, data->player.pos_x, next_y))
-			data->player.pos_y = next_y;
-	}
+		attempt_move(data, -data->player.dir_x * s, -data->player.dir_y * s);
 	if (data->player.key_left)
-	{
-		next_x = data->player.pos_x - data->player.plane_x * move_speed;
-		next_y = data->player.pos_y - data->player.plane_y * move_speed;
-		
-		if (check_collision(data, next_x, data->player.pos_y))
-			data->player.pos_x = next_x;
-		if (check_collision(data, data->player.pos_x, next_y))
-			data->player.pos_y = next_y;
-	}
+		attempt_move(data, -data->player.plane_x * s,
+			-data->player.plane_y * s);
 	if (data->player.key_right)
-	{
-		next_x = data->player.pos_x + data->player.plane_x * move_speed;
-		next_y = data->player.pos_y + data->player.plane_y * move_speed;
-
-		if (check_collision(data, next_x, data->player.pos_y))
-			data->player.pos_x = next_x;
-		if (check_collision(data, data->player.pos_x, next_y))
-			data->player.pos_y = next_y;
-	}
-	directional_key(data);
+		attempt_move(data, data->player.plane_x * s, data->player.plane_y * s);
 }

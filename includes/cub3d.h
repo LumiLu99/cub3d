@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/02 17:15:34 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/02 23:55:49 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,17 @@ typedef struct s_map
 
 typedef struct s_minimap
 {
-	int	mp_x;
-	int	mp_y;
+	double	ray_dir_x;
+	double	ray_dir_y;
+	double	delta_dist_x;
+	double	delta_dist_y;
+	double	side_dist_x;
+	double	side_dist_y;
+	int		map_x;
+	int		map_y;
+	int		step_x;
+	int		step_y;
+	int		side;
 }	t_minimap;
 
 typedef struct s_player
@@ -93,7 +102,7 @@ typedef struct s_time
 {
 	long long	time;
 	long long	old_time;
-	double	delta_time;
+	double		delta_time;
 	int			fps;
 	int			fps_count;
 	long long	start_time;
@@ -141,7 +150,6 @@ typedef struct s_data
 	t_img		img_mlx;
 	t_img		tex[TEX_SIZE];
 	t_map		map;
-	t_minimap	mini;
 	t_time		time;
 	t_ray		ray;
 }	t_data;
@@ -159,15 +167,19 @@ int	on_keyrelease(int keysym, t_data *data);
 
 // raycasting
 void	draw_dda(t_data *data);
+void	dda_calc(t_data *data, int *side);
 void	side_dist(t_data *data);
 void	ray_tex_init(t_data *data);
 void	ray_tex_draw(t_data *data, int x);
 void	ray_tex_sides(t_data *data, int side);
+void	ray_tex_wall(t_data *data, int x, int y);
 void	tex_init(t_data *data);
 
 // minimap
 void	print_player_pixel(t_data *data);
 void	print_minimap(t_data *data);
+void	draw_rays_minimap(t_data *data);
+void	process_minimap_ray(t_data *data, int x);
 
 // init
 int		init_data(t_data *data, char **argv);

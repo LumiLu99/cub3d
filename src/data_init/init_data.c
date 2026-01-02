@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 17:08:16 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/02 17:15:18 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/02 17:22:41 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void	init_mlx(t_data *data)
 	data->img_mlx.img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
 	if (!data->img_mlx.img)
 		print_error_exit("img_mlx init failed!\n");
-	data->img_mlx.addr = mlx_get_data_addr(data->img_mlx.img, &data->img_mlx.bits_per_pixel,
+	data->img_mlx.addr = mlx_get_data_addr(data->img_mlx.img,
+			&data->img_mlx.bits_per_pixel,
 			&data->img_mlx.line_len, &data->img_mlx.endian);
 	if (!data->img_mlx.addr)
 		print_error_exit("img addr init failed!\n");
