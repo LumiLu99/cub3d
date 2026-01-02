@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/03 01:20:37 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/03 01:35:49 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ typedef struct s_time
 {
 	long long	time;
 	long long	old_time;
-	double		delta_time;
 	double		delta_time;
 	int			fps;
 	int			fps_count;
