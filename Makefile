@@ -14,6 +14,7 @@ SRC_DIR = src
 PARSING_DIR = parsing
 MOVEMENT_DIR = movement
 RAYCAST_DIR = raycasting
+INIT_DIR = data_init
 OBJ_DIR = obj
 INC_DIR = include
 LIBFT_DIR = libft
@@ -30,7 +31,8 @@ RM = rm -rf
 # Source files
 SRC = $(addprefix $(SRC_DIR)/, main.c) \
 		$(addprefix $(SRC_DIR)/$(MOVEMENT_DIR)/, key.c player.c)	\
-		$(addprefix $(SRC_DIR)/$(RAYCAST_DIR)/, raycasting.c texture.c utils.c)	\
+		$(addprefix $(SRC_DIR)/$(INIT_DIR)/, init_data.c init_player.c)	\
+		$(addprefix $(SRC_DIR)/$(RAYCAST_DIR)/, raycasting.c minimap.c minimap_ray.c minimap_ray_utils.c raycasting_utils.c raycasting_utils2.c texture.c utils.c )	\
 		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_map2.c parse_color.c parsing_utils.c parsing_free.c parse.c)
 
 # Object files
@@ -46,7 +48,7 @@ $(LIBFT): FORCE
 	@make -C $(LIBFT_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR) $(OBJ_DIR)/$(PARSING_DIR) $(OBJ_DIR)/$(MOVEMENT_DIR) $(OBJ_DIR)/$(RAYCAST_DIR) $(OBJ_DIR)/$(PARSING_DIR)
+	@mkdir -p $(OBJ_DIR) $(OBJ_DIR)/$(PARSING_DIR) $(OBJ_DIR)/$(MOVEMENT_DIR) $(OBJ_DIR)/$(RAYCAST_DIR) $(OBJ_DIR)/$(PARSING_DIR) $(OBJ_DIR)/$(INIT_DIR)
 	@$(CC) $(CFLAGS) $(INC) -Imlx -O3 -c $< -o $@
 	@echo "$(YELLOW)Compiled ✅ $(GREEN) $(BOLD) $< $(RESET)"
 

@@ -59,3 +59,14 @@ long long	get_time_in_ms(void)
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
+
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+		return ;
+	dst = data->img_mlx.addr + (y * data->img_mlx.line_len
+			+ x * (data->img_mlx.bits_per_pixel / 8));
+	*(unsigned int *)dst = color;
+}
