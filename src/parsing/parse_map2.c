@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 13:02:24 by wshee             #+#    #+#             */
-/*   Updated: 2026/01/02 13:24:31 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/02 16:15:52 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,8 @@ bool	validate_player(char **map, t_player *player)
 			if (player_direction(map[i][j]))
 			{
 				player->direction = map[i][j];
-				player->pos_x = (double)j;
-				player->pos_y = (double)i;
+				player->pos_x = (double)j + 0.5;
+				player->pos_y = (double)i + 0.5;
 				player_count++;
 			}
 			j++;

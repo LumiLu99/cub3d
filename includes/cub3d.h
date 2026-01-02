@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/31 16:03:14 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/02 14:21:26 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,11 +152,11 @@ typedef struct s_data
 }	t_data;
 
 // loop
-int	ft_close(t_data *data);
-int	update(void *param);
+int			ft_close(t_data *data);
+int			update(void *param);
 
 // player movement
-void	move_player(t_data *data);
+void		move_player(t_data *data);
 
 // key
 int			on_keypress(int keysym, t_data *data);
