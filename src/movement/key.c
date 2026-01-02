@@ -6,11 +6,11 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 12:04:19 by yelu              #+#    #+#             */
-/*   Updated: 2025/10/21 17:47:43 by yelu             ###   ########.fr       */
+/*   Updated: 2025/12/31 16:26:46 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cub3d.h"
+#include "../../includes/cub3d.h"
 
 int	on_keypress(int keysym, t_data *data)
 {

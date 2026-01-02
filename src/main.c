@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/02 14:01:06 by wshee            ###   ########.fr       */
+/*   Updated: 2025/12/31 18:17:30 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,6 +309,8 @@ int main(int argc, char **argv)
 		return (1);
 	mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 	mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
+	mlx_mouse_move(data.mlx, data.win, WIDTH / 2, HEIGHT / 2);
+	// mlx_hook(data.win, MotionNotify, PointerMotionMask, key_mouse, &data);
 	mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 		ft_close, &data);
 	mlx_loop_hook(data.mlx, update, &data);
