@@ -33,7 +33,7 @@ SRC = $(addprefix $(SRC_DIR)/, main.c) \
 		$(addprefix $(SRC_DIR)/$(MOVEMENT_DIR)/, key.c player.c)	\
 		$(addprefix $(SRC_DIR)/$(INIT_DIR)/, init_data.c init_player.c)	\
 		$(addprefix $(SRC_DIR)/$(RAYCAST_DIR)/, raycasting.c minimap.c minimap_ray.c minimap_ray_utils.c raycasting_utils.c raycasting_utils2.c texture.c utils.c )	\
-		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_color.c parsing_utils.c)
+		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_map2.c parse_color.c parsing_utils.c parsing_free.c parse.c)
 
 # Object files
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
