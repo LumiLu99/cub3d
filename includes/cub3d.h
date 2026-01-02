@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/03 01:11:00 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/03 01:20:09 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,26 +172,26 @@ int			on_keypress(int keysym, t_data *data);
 int			on_keyrelease(int keysym, t_data *data);
 
 // raycasting
-void	draw_dda(t_data *data);
-void	dda_calc(t_data *data, int *side);
-void	side_dist(t_data *data);
-void	ray_tex_init(t_data *data);
-void	ray_tex_draw(t_data *data, int x);
-void	ray_tex_sides(t_data *data, int side);
-void	ray_tex_wall(t_data *data, int x, int y);
-void	tex_init(t_data *data);
+void		draw_dda(t_data *data);
+void		dda_calc(t_data *data, int *side);
+void		side_dist(t_data *data);
+void		ray_tex_init(t_data *data);
+void		ray_tex_draw(t_data *data, int x);
+void		ray_tex_sides(t_data *data, int side);
+void		ray_tex_wall(t_data *data, int x, int y);
+void		tex_init(t_data *data);
 
 // minimap
-void	print_player_pixel(t_data *data);
-void	print_minimap(t_data *data);
-void	draw_rays_minimap(t_data *data);
-void	process_minimap_ray(t_data *data, int x);
+void		print_player_pixel(t_data *data);
+void		print_minimap(t_data *data);
+void		draw_rays_minimap(t_data *data);
+void		process_minimap_ray(t_data *data, int x);
 
 // init
-int		init_data(t_data *data, char **argv);
-void	init_mlx(t_data *data);
-void	init_player(t_player *player);
-void	init_fps(t_data *data);
+int			init_data(t_data *data, char **argv);
+void		init_mlx(t_data *data);
+void		init_player(t_player *player);
+void		init_fps(t_data *data);
 
 // utils
 void		print_error_exit(char *str);
@@ -205,7 +205,6 @@ int			parse_file(const char *filename, t_data *data);
 // parse_map.c
 int			parse_map(const char *filename, t_data *data);
 bool		player_direction(char c);
-
 //parse_map2.c
 bool		read_map(t_map *map, char *line);
 bool		validate_map(t_map *map, t_player *player);
@@ -219,7 +218,8 @@ int			parse_color(char *identifier, char *color);
 
 // parsing_utils.c
 int			identify_state(char c);
-bool		check_open_file(const char *file, const char *ext, int *fd, char *msg);
+bool		check_open_file(const char *file,
+				const char *ext, int *fd, char *msg);
 bool		check_all_element_exists(t_data *data);
 bool		check_file_ext(const char *filename, const char *ext);
 
@@ -229,5 +229,4 @@ bool		error_message(char *message);
 void		free_texture_path(t_data *data);
 void		cleanup_data(t_data *data);
 void		cleanup_texture(char **texture, char *texture_path);
-
 #endif
