@@ -30,7 +30,7 @@ RM = rm -rf
 # Source files
 SRC = $(addprefix $(SRC_DIR)/, main.c) \
 		$(addprefix $(SRC_DIR)/$(MOVEMENT_DIR)/, key.c player.c)	\
-		$(addprefix $(SRC_DIR)/$(RAYCAST_DIR)/, raycasting.c texture.c utils.c)	\
+		$(addprefix $(SRC_DIR)/$(RAYCAST_DIR)/, raycasting.c minimap.c texture.c utils.c)	\
 		$(addprefix $(SRC_DIR)/$(PARSING_DIR)/, parse_texture.c parse_map.c parse_color.c parsing_utils.c)
 
 # Object files

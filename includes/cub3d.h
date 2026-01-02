@@ -165,6 +165,9 @@ void	ray_tex_draw(t_data *data, int x);
 void	ray_tex_sides(t_data *data, int side);
 void	tex_init(t_data *data);
 
+// minimap
+void	print_player_pixel(t_data *data);
+
 // init
 void	init_mlx(t_data *data);
 void	init_player(t_player *player);

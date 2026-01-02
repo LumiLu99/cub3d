@@ -113,7 +113,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-static void	print_player_pixel(t_data *data)
+void	print_player_pixel(t_data *data)
 {
 	int i = -3;
 	int j = -3;
@@ -310,7 +310,7 @@ int main(int argc, char **argv)
 		return 1;
 	mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 	mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
-	mlx_mouse_move(data.mlx, data.win, WIDTH / 2, HEIGHT / 2);
+	// mlx_mouse_move(data.mlx, data.win, WIDTH / 2, HEIGHT / 2);
 	// mlx_hook(data.win, MotionNotify, PointerMotionMask, key_mouse, &data);
 	mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 		ft_close, &data);
