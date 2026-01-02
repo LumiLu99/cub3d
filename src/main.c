@@ -300,14 +300,13 @@ int main(int argc, char **argv)
 {
 	t_data	data;
 
-	(void)argv;
 	if (argc != 2)
 	{
 		print_error_exit("Usage: ./cub3D <map file.ber>\n");
-		return 1;
+		return (1);
 	}
 	if (init_data(&data, argv))
-		return 1;
+		return (1);
 	mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 	mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
 	mlx_mouse_move(data.mlx, data.win, WIDTH / 2, HEIGHT / 2);
@@ -316,7 +315,7 @@ int main(int argc, char **argv)
 		ft_close, &data);
 	mlx_loop_hook(data.mlx, update, &data);
 	mlx_loop(data.mlx);
-	return 0;
+	return (0);
 }
 
 /**
