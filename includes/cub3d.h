@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/02 16:04:42 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/02 17:15:34 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,8 +170,10 @@ void	print_player_pixel(t_data *data);
 void	print_minimap(t_data *data);
 
 // init
+int		init_data(t_data *data, char **argv);
 void	init_mlx(t_data *data);
 void	init_player(t_player *player);
+void	init_fps(t_data *data);
 
 // utils
 void		print_error_exit(char *str);
