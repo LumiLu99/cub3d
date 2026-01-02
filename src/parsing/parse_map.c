@@ -6,21 +6,22 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2026/01/01 15:14:39 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/02 14:00:33 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../includes/cub3d.h"
+#include "../../includes/cub3d.h"
 
-static void create_map(int *row, t_map *map, char *line);
-static void store_2d_array(t_map *map, const char *filename);
-static void allocate_map_array(t_map *map);
-int parse_map(const char *filename, t_data *data);
+static void	create_map(int *row, t_map *map, char *line);
+static void	store_2d_array(t_map *map, const char *filename);
+static void	allocate_map_array(t_map *map);
+int			parse_map(const char *filename, t_data *data);
+bool		player_direction(char c);
 
-static void create_map(int *row, t_map *map, char *line)
+static void	create_map(int *row, t_map *map, char *line)
 {
-	int i;
-	int col;
+	int	i;
+	int	col;
 
 	i = 0;
 	col = 1;
@@ -34,12 +35,12 @@ static void create_map(int *row, t_map *map, char *line)
 /**
  * read file in map section and store the map in a 2d array
  */
-static void store_2d_array(t_map *map, const char *filename)
+static void	store_2d_array(t_map *map, const char *filename)
 {
-	int fd;
-	t_parse_state type;
-	int row;
-	char *line;
+	int		fd;
+	int		row;
+	char	*line;
+	t_state	type;
 
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
@@ -52,33 +53,34 @@ static void store_2d_array(t_map *map, const char *filename)
 	row = 1;
 	while (line)
 	{
-		type = identify_parse_state(line[0]);
+		type = identify_state(line[0]);
 		if (type == MAP)
 			create_map(&row, map, line);
 		free(line);
 		line = get_next_line(fd);
 	}
 	close(fd);
-	// print_2d_map(map->map_arr);
 }
 
 // add outder border around the map
 // total rows = map_rows + top + bottom + NULL
 // when allocate for map_map_column +2, as i = 0,
 // for each row, 2 for space and 1 for '\0'
-static void allocate_map_array(t_map *map)
+static void	allocate_map_array(t_map *map)
 {
-	map->map_arr = (char **)malloc(sizeof(char*) * (map->map_rows + 3));
-	if(!map->map_arr)
+	int	i;
+
+	map->map_arr = (char **)malloc (sizeof(char *) * (map->map_rows + 3));
+	if (!map->map_arr)
 	{
 		ft_putstr_fd("Failed to malloc\n", 2);
 		return ;
 	}
-	int i = 0;
+	i = 0;
 	while (i < map->map_rows + 2)
 	{
-		map->map_arr[i] = (char *)malloc(sizeof(char) * (map->map_column + 3));
-		if(!map->map_arr[i])
+		map->map_arr[i] = (char *)malloc (sizeof(char) * (map->map_column + 3));
+		if (!map->map_arr[i])
 		{
 			ft_putstr_fd("Failed to malloc\n", 2);
 			return ;
@@ -88,22 +90,24 @@ static void allocate_map_array(t_map *map)
 		i++;
 	}
 	map->map_arr[i] = NULL;
-	// print_2d_map(map->map_arr);
 }
 
-int parse_map(const char *filename, t_data *data)
+int	parse_map(const char *filename, t_data *data)
 {
 	allocate_map_array(&data->map);
 	store_2d_array(&data->map, filename);
-	if (!validate_player(&data->map, &data->player))
-	{
-		return(error_message("Map should consists of one player only"));
-	}
+	if (!validate_player(data->map.map_arr, &data->player))
+		return (error_message("Map should consists of one player only"));
 	if (!validate_map(&data->map, &data->player))
-	{
 		return (error_message("Invalid map: Map not close with walls"));
-	}
-	return 1;
+	return (1);
+}
+
+bool	player_direction(char c)
+{
+	if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
+		return (true);
+	return (false);
 }
 
 // Requirements:

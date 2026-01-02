@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/28 20:54:53 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/02 14:01:06 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,21 +300,20 @@ int main(int argc, char **argv)
 {
 	t_data	data;
 
-	(void)argv;
 	if (argc != 2)
 	{
 		print_error_exit("Usage: ./cub3D <map file.ber>\n");
-		return 1;
+		return (1);
 	}
 	if (init_data(&data, argv))
-		return 1;
+		return (1);
 	mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 	mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
 	mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 		ft_close, &data);
 	mlx_loop_hook(data.mlx, update, &data);
 	mlx_loop(data.mlx);
-	return 0;
+	return (0);
 }
 
 /**

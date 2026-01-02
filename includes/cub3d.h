@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/01 15:25:42 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/02 13:39:06 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,15 @@
 # define WEST 3
 
 // Error message
-# define INVALID_XPM_FILE_EXT "Invalid texture file: Must end with extension \".xpm\""
-# define INVALID_CUB_FILE_EXT "Invalid cub file: Must end with extension \".cub\""
+# define INVALID_XPM_FILE_EXT "Invalid texture file extension \".xpm\""
+# define INVALID_CUB_FILE_EXT "Invalid cub file extension \".cub\""
 
-typedef enum parse_state {
+typedef enum state
+{
 	ELEMENTS,
 	MAP,
 	INVALID
-}	t_parse_state;
+}	t_state;
 
 typedef struct s_map
 {
@@ -97,7 +98,7 @@ typedef struct s_time
 {
 	long long	time;
 	long long	old_time;
-	double	delta_time;
+	double		delta_time;
 	int			fps;
 	int			fps_count;
 	long long	start_time;
@@ -139,8 +140,8 @@ typedef struct s_img
 
 typedef struct s_data
 {
-	void	*mlx;
-	void	*win;
+	void		*mlx;
+	void		*win;
 	t_player	player;
 	t_img		img_mlx;
 	t_img		tex[TEX_SIZE];
@@ -150,26 +151,26 @@ typedef struct s_data
 	t_ray		ray;
 }	t_data;
 
-int	ft_close(t_data *data);
-int	update(void *param);
+int			ft_close(t_data *data);
+int			update(void *param);
 
-void	move_player(t_data *data);
+void		move_player(t_data *data);
 
 // key
-int	on_keypress(int keysym, t_data *data);
-int	on_keyrelease(int keysym, t_data *data);
+int			on_keypress(int keysym, t_data *data);
+int			on_keyrelease(int keysym, t_data *data);
 
 // raycasting
-void	draw_dda(t_data *data);
-void	side_dist(t_data *data);
-void	ray_tex_init(t_data *data);
-void	ray_tex_draw(t_data *data, int x);
-void	ray_tex_sides(t_data *data, int side);
-void	tex_init(t_data *data);
+void		draw_dda(t_data *data);
+void		side_dist(t_data *data);
+void		ray_tex_init(t_data *data);
+void		ray_tex_draw(t_data *data, int x);
+void		ray_tex_sides(t_data *data, int side);
+void		tex_init(t_data *data);
 
 // init
-void	init_mlx(t_data *data);
-void	init_player(t_player *player);
+void		init_mlx(t_data *data);
+void		init_player(t_player *player);
 
 // utils
 void		print_error_exit(char *str);
@@ -178,33 +179,34 @@ long long	get_time_in_ms(void);
 void		print_fps(t_data *data);
 
 //parse.c
-int parse_file(const char *filename, t_data *data);
+int			parse_file(const char *filename, t_data *data);
 
 // parse_map.c
-int parse_map(const char *filename, t_data *data);
+int			parse_map(const char *filename, t_data *data);
+bool		player_direction(char c);
 
 //parse_map2.c
-bool read_map(t_map *map, char *line);
-bool validate_map(t_map *map, t_player *player);
-bool validate_player(t_map *map, t_player *player);
+bool		read_map(t_map *map, char *line);
+bool		validate_map(t_map *map, t_player *player);
+bool		validate_player(char **map, t_player *player);
 
 //parse_texture.c
-int parse_texture(char *line, t_data *data);
+int			parse_texture(char *line, t_data *data);
 
 //parse_color.c
-int parse_color(char *identifier, char *color);
+int			parse_color(char *identifier, char *color);
 
 // parsing_utils.c
-int identify_parse_state(char c);
-bool check_and_open_file(const char *file, const char *ext, int *fd, char *msg);
-bool check_all_element_exists(t_data *data);
-bool check_file_ext(const char *filename, const char *ext);
+int			identify_state(char c);
+bool		check_open_file(const char *file, const char *ext, int *fd, char *msg);
+bool		check_all_element_exists(t_data *data);
+bool		check_file_ext(const char *filename, const char *ext);
 
 // parsing_free.c
-void free_2d_array(char **array);
-bool error_message(char *message);
-void free_texture_path(t_data *data);
-void cleanup_data(t_data *data);
-void cleanup_texture(char **texture, char *texture_path);
+void		free_2d_array(char **array);
+bool		error_message(char *message);
+void		free_texture_path(t_data *data);
+void		cleanup_data(t_data *data);
+void		cleanup_texture(char **texture, char *texture_path);
 
 #endif

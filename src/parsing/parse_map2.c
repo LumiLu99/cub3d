@@ -1,16 +1,29 @@
-# include "../../includes/cub3d.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_map2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/02 13:02:24 by wshee             #+#    #+#             */
+/*   Updated: 2026/01/02 13:24:31 by wshee            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static bool check_map_character(char c);
-bool read_map(t_map *map, char *line);
-static bool check_walls(char c);
-bool validate_map(t_map *map, t_player *player);
-bool validate_player(t_map *map, t_player *player);
+#include "../../includes/cub3d.h"
 
-static bool check_map_character(char c)
+static bool	check_map_character(char c);
+bool		read_map(t_map *map, char *line);
+static bool	check_walls(char c);
+bool		validate_map(t_map *map, t_player *player);
+bool		validate_player(char **map, t_player *player);
+
+static bool	check_map_character(char c)
 {
-	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W' && c != 'E' && c != ' ')
-		return false;
-	return true;
+	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W'
+		&& c != 'E' && c != ' ')
+		return (false);
+	return (true);
 }
 
 /**
@@ -18,10 +31,10 @@ static bool check_map_character(char c)
  * if see newline in section map, return error
  * store the maximum length for map_column
  */
-bool read_map(t_map *map, char *line)
+bool	read_map(t_map *map, char *line)
 {
-	int len;
-	int i;
+	int	len;
+	int	i;
 
 	if (line[0] == '\n')
 	{
@@ -32,62 +45,66 @@ bool read_map(t_map *map, char *line)
 	while (i < len - 1)
 	{
 		if (!check_map_character(line[i]))
-		{
-			printf("Invalid character in map: [%c] at row %d map_column %d\n", line[i], map->map_rows, i);
-			return false;
-		}
+			return (error_message("Invalid character in map"));
 		i++;
 	}
 	if (map->map_column < len)
 		map->map_column = len;
 	map->map_rows++;
-	return true;
+	return (true);
 }
 
-static bool check_walls(char c)
+static bool	check_walls(char c)
 {
 	if (c != '1' && c != '0' && c != 'N' && c != 'S' && c != 'W' && c != 'E')
-		return false;
-	return true;
+		return (false);
+	return (true);
 }
 
 // when see 0 or player check four direction is fill with walls
-bool validate_map(t_map *map, t_player *player)
+bool	validate_map(t_map *map, t_player *player)
 {
-	int i = 0;
+	int	i;
+	int	j;
+
+	i = 0;
 	while (map->map_arr[i])
 	{
-		int j = 0;
+		j = 0;
 		while (map->map_arr[i][j] != '\0')
 		{
-			if (map->map_arr[i][j] == '0' || ((double)j == player->pos_x && (double)i == player->pos_y))
+			if (map->map_arr[i][j] == '0'
+				|| ((double)j == player->pos_x && (double)i == player->pos_y))
 			{
-				// printf("check no walls >> [%c] x: %d, y: %d\n", map->map_arr[i][j], j, i);
-				if (!check_walls(map->map_arr[i - 1][j]) || !check_walls(map->map_arr[i + 1][j]) || !check_walls(map->map_arr[i][j - 1]) || !check_walls(map->map_arr[i][j + 1]))
-				{
-					// printf("no walls >> x: %d, y: %d\n", j, i);
-					return false;
-				}
+				if (!check_walls(map->map_arr[i - 1][j])
+					|| !check_walls(map->map_arr[i + 1][j])
+					|| !check_walls(map->map_arr[i][j - 1])
+					|| !check_walls(map->map_arr[i][j + 1]))
+					return (false);
 			}
 			j++;
 		}
 		i++;
 	}
-	return true;
+	return (true);
 }
 
-bool validate_player(t_map *map, t_player *player)
+bool	validate_player(char **map, t_player *player)
 {
-	int i = 0;
-	int player_count = 0;
-	while (map->map_arr[i])
+	int	i;
+	int	j;
+	int	player_count;
+
+	i = 0;
+	player_count = 0;
+	while (map[i])
 	{
-		int j = 0;
-		while (map->map_arr[i][j] != '\0')
+		j = 0;
+		while (map[i][j] != '\0')
 		{
-			if (map->map_arr[i][j] == 'N' || map->map_arr[i][j] == 'S' || map->map_arr[i][j] == 'E' || map->map_arr[i][j] == 'W')
+			if (player_direction(map[i][j]))
 			{
-				player->direction = map->map_arr[i][j];
+				player->direction = map[i][j];
 				player->pos_x = (double)j;
 				player->pos_y = (double)i;
 				player_count++;
@@ -96,8 +113,7 @@ bool validate_player(t_map *map, t_player *player)
 		}
 		i++;
 	}
-	// printf("player: %d pos >> x: %d, y: %d\n", player, data->player.pos_x, data->player.pos_y);
 	if (player_count == 1)
-		return true;
-	return false;
+		return (true);
+	return (false);
 }
