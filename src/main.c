@@ -33,7 +33,6 @@ int	main(int argc, char **argv)
 {
 	t_data	data;
 
-	(void)argv;
 	if (argc != 2)
 	{
 		print_error_exit("Usage: ./cub3D <map file.ber>\n");

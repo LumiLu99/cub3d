@@ -6,11 +6,14 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 19:25:06 by wshee             #+#    #+#             */
-/*   Updated: 2025/12/28 20:53:31 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/02 12:57:48 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/cub3d.h"
+
+static int	convert_rgb_to_int(const char *str);
+int			parse_color(char *identifier, char *color);
 
 static int	convert_rgb_to_int(const char *str)
 {
