@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/31 18:17:30 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/02 16:04:52 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,89 +101,6 @@ void	init_fps(t_data *data)
 	data->time.fps_count = 0;
 	data->time.fps = 0;
 }
-
-
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-
-	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
-        return ;
-	dst = data->img_mlx.addr + (y * data->img_mlx.line_len + x * (data->img_mlx.bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
-}
-
-void	print_player_pixel(t_data *data)
-{
-	int i = -3;
-	int j = -3;
-	while (i < 3)
-	{
-		j = -3;
-		while (j < 3)
-		{
-			my_mlx_pixel_put(data, (data->player.pos_x * TILE_SIZE) + i, (data->player.pos_y * TILE_SIZE) + j, RED_PIXEL);
-			j++;
-		}
-		i++;
-	}
-}
-
-
-static void	print_minimap(t_data *data)
-{
-	int i = 0;
-	int j = 0;
-	int mx = 0;
-	int my = 0;
-	int x = 0;
-	int y = 0;
-	while (data->map.map_arr[i])
-	{
-		j = 0;
-		while (data->map.map_arr[i][j])
-		{
-			x = j * TILE_SIZE;
-			y = i * TILE_SIZE;
-			if (data->map.map_arr[i][j] == '1')
-			{
-				mx = 0;
-				while (mx < TILE_SIZE)
-				{
-					my = 0;
-					while (my < TILE_SIZE)
-					{
-						my_mlx_pixel_put(data, x + mx, y + my, GRAY_PIXEL);
-						my++;
-					}
-					mx++;
-				}
-			}
-			else if (data->map.map_arr[i][j] == '0' ||
-             data->map.map_arr[i][j] == 'N' ||
-             data->map.map_arr[i][j] == 'S' ||
-             data->map.map_arr[i][j] == 'E' ||
-             data->map.map_arr[i][j] == 'W')
-			{
-				mx = 0;
-				while (mx < TILE_SIZE)
-				{
-					my = 0;
-					while (my < TILE_SIZE)
-					{
-						my_mlx_pixel_put(data, x + mx, y + my, WHITE_PIXEL);
-						my++;
-					}
-					mx++;
-				}
-			}
-			j++;
-		}
-		i++;
-	}
-}
-
-
 
 void draw_line(t_data *data, double x1, double y1, double x2, double y2)
 {

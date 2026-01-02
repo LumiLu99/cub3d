@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/31 16:03:14 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/02 16:04:42 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ void	tex_init(t_data *data);
 
 // minimap
 void	print_player_pixel(t_data *data);
+void	print_minimap(t_data *data);
 
 // init
 void	init_mlx(t_data *data);
