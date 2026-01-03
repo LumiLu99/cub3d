@@ -1,16 +1,11 @@
-NO textures/default/wood.xpm
-SO textures/default/wood.xpm
-WE textures/default/wood.xpm
-EA textures/default/wood.xpm
+NO textures/barrel.xpm
+SO textures/south.xpm
+WE textures/pillar.xpm
+EA textures/east.xpm
 
 F 220,100,0
 C 255,255,255
 
-11111111111111111
-100000000000001
-10000000000001
-10000000011111111
-100000000000000001
-10000000000001111
-100000000000000001
-11111111111111111111111
+111
+1N1
+111

@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 17:08:16 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/02 17:22:41 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/03 20:37:22 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	init_data(t_data *data, char **argv)
 	init_mlx(data);
 	init_player(&data->player);
 	tex_init(data);
+	sprite_init(data);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 11:54:53 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/31 16:27:13 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/03 16:51:08 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static int	check_collision(t_data *data, double x, double y)
 	return (1);
 }
 
-static void	rotate_player(t_data *data, double rot_speed)
+void	rotate_player(t_data *data, double rot_speed)
 {
 	double	old_dir_x;
 	double	old_plane_x;

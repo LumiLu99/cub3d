@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/03 01:35:49 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/03 20:39:02 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,19 @@ typedef struct s_img
 	char	*tex_path;
 }	t_img;
 
+typedef struct s_sprite
+{
+	void	*img_ptr;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+	int		width;
+	int		height;
+	float	x;
+	float	y;
+} t_sprite;
+
 typedef struct s_data
 {
 	void		*mlx;
@@ -157,6 +170,7 @@ typedef struct s_data
 	t_map		map;
 	t_time		time;
 	t_ray		ray;
+	t_sprite	sprite;
 }	t_data;
 
 // loop
@@ -165,12 +179,19 @@ int			update(void *param);
 
 // player movement
 void		move_player(t_data *data);
+void		rotate_player(t_data *data, double rot_speed);
 
 // key
 int			on_keypress(int keysym, t_data *data);
 int			on_keyrelease(int keysym, t_data *data);
 
-// raycasting
+// mouse
+int			on_keymouse(int x, int y, t_data *data);
+
+// sprite
+void		sprite_init(t_data *data);
+
+// raycasting wall
 void		draw_dda(t_data *data);
 void		dda_calc(t_data *data, int *side);
 void		side_dist(t_data *data);
