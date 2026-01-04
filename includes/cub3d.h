@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:56:07 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/03 20:39:02 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/04 21:22:11 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ typedef struct s_player
 	double	plane_x;
 	double	plane_y;
 	double	angle;
+	float	sway_angle;
 	bool	key_up;
 	bool	key_down;
 	bool	key_right;
@@ -170,7 +171,7 @@ typedef struct s_data
 	t_map		map;
 	t_time		time;
 	t_ray		ray;
-	t_sprite	sprite;
+	t_sprite	sprite[2];
 }	t_data;
 
 // loop
@@ -190,6 +191,9 @@ int			on_keymouse(int x, int y, t_data *data);
 
 // sprite
 void		sprite_init(t_data *data);
+void		draw_cat(t_data *data);
+int			get_pixel_color(t_sprite *sprite, int x, int y);
+void		sprite_sway(t_data *data);
 
 // raycasting wall
 void		draw_dda(t_data *data);

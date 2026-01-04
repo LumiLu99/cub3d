@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 13:52:51 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/03 20:50:56 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/04 21:52:09 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,25 @@ void	tex_init(t_data *data)
 
 void	sprite_init(t_data *data)
 {
-	data->sprite.img_ptr = mlx_xpm_file_to_image(data->mlx,
-			"textures/gun.xpm", &data->sprite.width, &data->sprite.height);
-	data->sprite.addr = mlx_get_data_addr(data->sprite.img_ptr,
-			&data->sprite.bits_per_pixel, &data->sprite.line_length,
-			&data->sprite.endian);
-	data->sprite.x = (WIDTH / 2) - (data->sprite.width / 2);
-	data->sprite.y = HEIGHT - data->sprite.height;
+	int	i;
+
+	i = 0;
+	data->sprite[0].img_ptr = mlx_xpm_file_to_image(data->mlx,
+			"textures/cat1.xpm",
+			&data->sprite[0].width, &data->sprite[0].height);
+	data->sprite[0].addr = mlx_get_data_addr(data->sprite[0].img_ptr,
+			&data->sprite[0].bits_per_pixel, &data->sprite[0].line_length,
+			&data->sprite[0].endian);
+	data->sprite[1].img_ptr = mlx_xpm_file_to_image(data->mlx,
+			"textures/cat2.xpm",
+			&data->sprite[1].width, &data->sprite[1].height);
+	data->sprite[1].addr = mlx_get_data_addr(data->sprite[1].img_ptr,
+			&data->sprite[1].bits_per_pixel, &data->sprite[1].line_length,
+			&data->sprite[1].endian);
+	while (i < 2)
+	{
+		data->sprite[i].x = (WIDTH / 2) - (data->sprite[i].width / 2);
+		data->sprite[i].y = HEIGHT - data->sprite[i].height + 280;
+		i++;
+	}
 }
