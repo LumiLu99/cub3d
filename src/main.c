@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/04 22:21:37 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/10 14:30:40 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,16 @@ int	update(void *param)
 	t_data	*data;
 
 	data = (t_data *)param;
-	print_fps(data);
-	move_player(data);
-	sprite_sway(data);
 	ft_bzero(data->img_mlx.addr, WIDTH * HEIGHT
 		* (data->img_mlx.bits_per_pixel / 8));
+	sprite_sway(data);
+	move_player(data);
 	draw_dda(data);
 	print_minimap(data);
 	print_player_pixel(data);
 	draw_rays_minimap(data);
 	draw_cat(data);
+	print_fps(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img_mlx.img, 0, 0);
 	return (0);
 }

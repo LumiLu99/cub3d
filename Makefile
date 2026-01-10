@@ -27,6 +27,7 @@ MLX_LIB = $(MLX_DIR)/libmlx_Linux.a
 CC = gcc
 CFLAGS = -O3 # -Wall -Werror -Wextra
 RM = rm -rf
+# valgrind --leak-check=full --show-leak-kinds=all --suppressions=local.supp ./cub3d maps/map.cub
 
 # Source files
 SRC = $(addprefix $(SRC_DIR)/, main.c) \
