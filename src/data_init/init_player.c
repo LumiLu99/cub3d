@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 17:14:24 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/02 23:20:35 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/05 18:42:07 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static void	set_east_west_direction(t_player *player)
 
 void	init_player(t_player *player)
 {
+	player->sway_angle = 0;
 	if (player->direction == 'N')
 	{
 		player->dir_x = 0.0;

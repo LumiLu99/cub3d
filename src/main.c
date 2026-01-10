@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:55:26 by yelu              #+#    #+#             */
-/*   Updated: 2026/01/02 23:53:05 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/10 14:30:40 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,16 @@ int	update(void *param)
 	t_data	*data;
 
 	data = (t_data *)param;
-	print_fps(data);
-	move_player(data);
 	ft_bzero(data->img_mlx.addr, WIDTH * HEIGHT
 		* (data->img_mlx.bits_per_pixel / 8));
+	sprite_sway(data);
+	move_player(data);
 	draw_dda(data);
 	print_minimap(data);
 	print_player_pixel(data);
 	draw_rays_minimap(data);
+	draw_cat(data);
+	print_fps(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img_mlx.img, 0, 0);
 	return (0);
 }
@@ -42,6 +44,9 @@ int	main(int argc, char **argv)
 		return (1);
 	mlx_hook(data.win, KeyPress, KeyPressMask, on_keypress, &data);
 	mlx_hook(data.win, KeyRelease, KeyReleaseMask, on_keyrelease, &data);
+	mlx_hook(data.win, MotionNotify, PointerMotionMask, on_keymouse, &data);
+	mlx_mouse_move(data.mlx, data.win, WIDTH / 2, HEIGHT / 2);
+	mlx_mouse_hide(data.mlx, data.win);
 	mlx_hook(data.win, DestroyNotify, SubstructureNotifyMask,
 		ft_close, &data);
 	mlx_loop_hook(data.mlx, update, &data);
@@ -50,8 +55,8 @@ int	main(int argc, char **argv)
 }
 
 /**
- * The Core Idea: Simulating 3D with 2D
-Imagine you are standing in the middle of the map.
+ *  * The Core Idea: Simulating 3D with 2D
+ Imagine you are standing in the middle of the map.
 You can't see the whole map at once, only what's in your Field of View (FOV).
 
 The program simulates this by sending out a series of "rays"

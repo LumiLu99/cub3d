@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 12:04:19 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/31 16:26:46 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/04 20:25:24 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,23 @@ int	on_keyrelease(int keysym, t_data *data)
 		data->player.left_rotate = false;
 	else if (keysym == XK_Right)
 		data->player.right_rotate = false;
+	return (0);
+}
+
+int	on_keymouse(int x, int y, t_data *data)
+{
+	double	rot_speed;
+	int		dx;
+	double	sensitivity;
+
+	(void)y;
+	sensitivity = 0.0001;
+	dx = x - (WIDTH / 2);
+	if (dx != 0)
+	{
+		rot_speed = dx * sensitivity;
+		rotate_player(data, rot_speed);
+		mlx_mouse_move(data->mlx, data->win, WIDTH / 2, HEIGHT / 2);
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/17 21:13:12 by yelu              #+#    #+#             */
-/*   Updated: 2025/12/31 16:28:47 by yelu             ###   ########.fr       */
+/*   Updated: 2026/01/04 22:10:21 by yelu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ int	ft_close(t_data *data)
 	while (i < TEX_SIZE)
 	{
 		mlx_destroy_image(data->mlx, data->tex[i].img);
+		i++;
+	}
+	i = 0;
+	while (i < 2)
+	{
+		mlx_destroy_image(data->mlx, data->sprite[i].img_ptr);
 		i++;
 	}
 	mlx_destroy_window(data->mlx, data->win);
