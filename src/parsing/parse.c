@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 13:33:47 by wshee             #+#    #+#             */
-/*   Updated: 2026/01/02 13:46:31 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/10 17:21:29 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	process_line(char **line, int *error, t_state *state, t_data *data)
 	t_state	type;
 
 	type = identify_state((*line)[0]);
-	if (type == INVALID)
+	if (type == INVALID && *state == ELEMENTS)
 	{
 		ft_putstr_fd("Error\nInvalid element in file\n", 2);
 		*error = -1;
