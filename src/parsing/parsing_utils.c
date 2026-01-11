@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 12:46:31 by wshee             #+#    #+#             */
-/*   Updated: 2026/01/02 13:59:49 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/11 18:14:54 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,7 @@ bool	check_file_ext(const char *filename, const char *ext)
 		filename_len--;
 		ext_len--;
 	}
+	if (filename[filename_len - 1] == '/')
+		return (false);
 	return (true);
 }

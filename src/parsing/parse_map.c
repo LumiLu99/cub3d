@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelu <yelu@student.42kl.edu.my>            +#+  +:+       +#+        */
+/*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 20:28:09 by wshee             #+#    #+#             */
-/*   Updated: 2026/01/02 14:00:33 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/11 18:13:56 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	create_map(int *row, t_map *map, char *line)
 
 	i = 0;
 	col = 1;
-	while (line[i] != '\n')
+	while (line[i] != '\n' && line[i] != '\0')
 	{
 		map->map_arr[*row][col++] = line[i++];
 	}
