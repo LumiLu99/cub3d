@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 13:02:24 by wshee             #+#    #+#             */
-/*   Updated: 2026/01/02 16:15:52 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/18 18:29:09 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool	read_map(t_map *map, char *line)
 	}
 	len = ft_strlen(line) - 1;
 	i = 0;
-	while (i < len - 1)
+	while (line[i] != '\n' && line[i] != '\0')
 	{
 		if (!check_map_character(line[i]))
 			return (error_message("Invalid character in map"));
@@ -74,7 +74,7 @@ bool	validate_map(t_map *map, t_player *player)
 		while (map->map_arr[i][j] != '\0')
 		{
 			if (map->map_arr[i][j] == '0'
-				|| ((double)j == player->pos_x && (double)i == player->pos_y))
+				|| ((double)j + 0.5 == player->pos_x && (double)i + 0.5 == player->pos_y))
 			{
 				if (!check_walls(map->map_arr[i - 1][j])
 					|| !check_walls(map->map_arr[i + 1][j])

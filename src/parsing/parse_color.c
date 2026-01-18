@@ -6,7 +6,7 @@
 /*   By: wshee <wshee@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 19:25:06 by wshee             #+#    #+#             */
-/*   Updated: 2026/01/02 12:57:48 by wshee            ###   ########.fr       */
+/*   Updated: 2026/01/18 18:28:34 by wshee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,16 @@ int	parse_color(char *identifier, char *color)
 	int		g;
 	int		b;
 
+	int i = 0;
+	int len = ft_strlen(color);
+	while(color[i])
+	{
+		if(color[0] == ',' || color[len] == ',')
+			return(-1);
+		if(color[i] == ',' && color[i + 1] == ',')
+			return(-1);
+		i++;
+	}
 	rgb = ft_split(color, ',');
 	counter = 0;
 	while (rgb[counter])
